@@ -125,3 +125,38 @@ class ComparisonResult(BaseModel):
     eligibility_comparison: Dict[str, Any]
     missing_fields: Dict[str, List[str]]
     error: Optional[str] = None
+
+
+# Eligibility check models
+
+
+class CheckEligibilityRequest(BaseModel):
+    """Request model for checking eligibility."""
+    policy_id: str = Field(..., min_length=1, description="Policy ID to check eligibility for")
+    applicant_info: Dict[str, Any] = Field(..., description="Applicant information for eligibility evaluation")
+
+    @field_validator("policy_id")
+    @classmethod
+    def validate_policy_id(cls, v: str) -> str:
+        """Validate policy_id is not empty and strip whitespace."""
+        if not v or not v.strip():
+            raise ValueError("policy_id cannot be empty")
+        return v.strip()
+
+
+class EligibilityCriterionResult(BaseModel):
+    """Result for a single eligibility criterion evaluation."""
+    criterion: str = Field(..., description="The eligibility criterion text")
+    status: str = Field(..., description="Status: 'passed', 'failed', or 'undetermined'")
+    reason: Optional[str] = Field(default=None, description="Explanation of the result")
+
+
+class EligibilityCheckResult(BaseModel):
+    """Result of eligibility check."""
+    success: bool
+    policy_id: str
+    policy_title: str
+    overall_status: str = Field(..., description="Overall status: 'eligible', 'ineligible', or 'undetermined'")
+    criteria_results: List[EligibilityCriterionResult] = Field(..., description="Results for each eligibility criterion")
+    summary: str = Field(..., description="Human-readable summary of the eligibility check")
+    error: Optional[str] = None

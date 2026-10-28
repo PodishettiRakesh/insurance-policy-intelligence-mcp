@@ -229,3 +229,76 @@ def test_e2e_limit_enforcement():
     finally:
         proc.terminate()
         proc.wait()
+
+
+def test_e2e_compare_policies():
+    """End-to-end test for compare_policies tool."""
+    proc = get_server_process()
+
+    try:
+        # Initialize
+        send_jsonrpc_request(proc, "initialize", {
+            "protocolVersion": "2025-06-18",
+            "capabilities": {},
+            "clientInfo": {"name": "e2e-test-client", "version": "1.0.0"}
+        })
+        send_jsonrpc_request(proc, "notifications/initialized")
+
+        # Test: Discover registered tool includes compare_policies_tool
+        response = send_jsonrpc_request(proc, "tools/list")
+        assert response is not None
+        tools = response["result"]["tools"]
+        tool_names = [tool.get("name", "") for tool in tools]
+        assert "compare_policies_tool" in tool_names
+
+        # Test: Compare two policies
+        response = send_jsonrpc_request(proc, "tools/call", {
+            "name": "compare_policies_tool",
+            "arguments": {
+                "policy_ids": ["TCI-DOM-001", "TCI-DOM-002"]
+            }
+        })
+
+        assert response is not None
+        result_text = extract_result_text(response)
+        result_data = json.loads(result_text)
+        assert result_data["success"] is True
+        assert "policies" in result_data
+        assert len(result_data["policies"]) == 2
+        assert "coverage_comparison" in result_data
+        assert "premium_comparison" in result_data
+        assert "deductible_comparison" in result_data
+        assert "eligibility_comparison" in result_data
+
+        # Test: Compare three policies
+        response = send_jsonrpc_request(proc, "tools/call", {
+            "name": "compare_policies_tool",
+            "arguments": {
+                "policy_ids": ["TCI-DOM-001", "TCI-DOM-002", "TCI-DOM-003"]
+            }
+        })
+
+        assert response is not None
+        result_text = extract_result_text(response)
+        result_data = json.loads(result_text)
+        assert result_data["success"] is True
+        assert len(result_data["policies"]) == 3
+
+        # Test: Compare with invalid policy ID
+        response = send_jsonrpc_request(proc, "tools/call", {
+            "name": "compare_policies_tool",
+            "arguments": {
+                "policy_ids": ["TCI-DOM-001", "INVALID-ID"]
+            }
+        })
+
+        assert response is not None
+        result_text = extract_result_text(response)
+        result_data = json.loads(result_text)
+        assert result_data["success"] is False
+        assert "error" in result_data
+        assert "not found" in result_data["error"].lower()
+
+    finally:
+        proc.terminate()
+        proc.wait()

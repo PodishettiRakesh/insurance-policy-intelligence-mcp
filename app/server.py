@@ -5,6 +5,7 @@ from typing import List, Optional
 
 from app.search import search_policies, SearchValidationError
 from app.comparison import compare_policies, ComparisonError
+from app.eligibility import check_eligibility, EligibilityError
 
 
 # Initialize MCP server
@@ -90,6 +91,49 @@ def compare_policies_tool(
 
     except ComparisonError as e:
         # Return error message for comparison errors
+        import json
+        return json.dumps({
+            "success": False,
+            "error": str(e)
+        }, indent=2)
+    except Exception as e:
+        # Return error message for unexpected errors
+        import json
+        return json.dumps({
+            "success": False,
+            "error": f"An unexpected error occurred: {str(e)}"
+        }, indent=2)
+
+
+@mcp.tool()
+def check_eligibility_tool(
+    policy_id: str,
+    applicant_info: dict
+) -> str:
+    """
+    Evaluate whether an applicant meets a policy's eligibility criteria.
+
+    Args:
+        policy_id: The policy ID to check eligibility for
+        applicant_info: Dictionary containing applicant information for evaluation
+                        (e.g., annual_turnover, business_age_years, financial_statements, etc.)
+
+    Returns:
+        JSON string containing detailed eligibility evaluation with:
+        - overall_status: 'eligible', 'ineligible', or 'undetermined'
+        - criteria_results: List of individual criterion evaluations
+        - summary: Human-readable summary of the evaluation
+    """
+    try:
+        # Call the eligibility check function
+        result = check_eligibility(policy_id=policy_id, applicant_info=applicant_info)
+
+        # Return as JSON string
+        import json
+        return json.dumps(result.model_dump(mode='json'), indent=2)
+
+    except EligibilityError as e:
+        # Return error message for eligibility errors
         import json
         return json.dumps({
             "success": False,

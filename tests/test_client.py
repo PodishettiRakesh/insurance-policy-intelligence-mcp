@@ -310,3 +310,85 @@ def test_client_invoke_search_no_matches():
     finally:
         proc.terminate()
         proc.wait()
+
+
+def test_client_compare_policies():
+    """Test client can invoke compare_policies_tool."""
+    proc = get_server_process()
+
+    try:
+        # Initialize
+        send_jsonrpc_request(proc, "initialize", {
+            "protocolVersion": "2025-06-18",
+            "capabilities": {},
+            "clientInfo": {"name": "test-client", "version": "1.0.0"}
+        })
+        send_jsonrpc_request(proc, "notifications/initialized")
+
+        # Invoke compare tool
+        response = send_jsonrpc_request(proc, "tools/call", {
+            "name": "compare_policies_tool",
+            "arguments": {
+                "policy_ids": ["TCI-DOM-001", "TCI-DOM-002"]
+            }
+        })
+
+        assert response is not None
+        assert "result" in response
+
+        # Extract the actual result text from MCP response format
+        result = response["result"]
+        if isinstance(result, dict) and "content" in result:
+            result_text = result["content"][0]["text"]
+        else:
+            result_text = result
+
+        result_data = json.loads(result_text)
+        assert result_data["success"] is True
+        assert "policies" in result_data
+        assert len(result_data["policies"]) == 2
+        assert "coverage_comparison" in result_data
+        assert "premium_comparison" in result_data
+    finally:
+        proc.terminate()
+        proc.wait()
+
+
+def test_client_compare_policies_invalid_ids():
+    """Test client handles invalid policy IDs in comparison."""
+    proc = get_server_process()
+
+    try:
+        # Initialize
+        send_jsonrpc_request(proc, "initialize", {
+            "protocolVersion": "2025-06-18",
+            "capabilities": {},
+            "clientInfo": {"name": "test-client", "version": "1.0.0"}
+        })
+        send_jsonrpc_request(proc, "notifications/initialized")
+
+        # Invoke compare with invalid ID
+        response = send_jsonrpc_request(proc, "tools/call", {
+            "name": "compare_policies_tool",
+            "arguments": {
+                "policy_ids": ["TCI-DOM-001", "INVALID-ID"]
+            }
+        })
+
+        assert response is not None
+        assert "result" in response
+
+        # Extract the actual result text from MCP response format
+        result = response["result"]
+        if isinstance(result, dict) and "content" in result:
+            result_text = result["content"][0]["text"]
+        else:
+            result_text = result
+
+        result_data = json.loads(result_text)
+        assert result_data["success"] is False
+        assert "error" in result_data
+        assert "not found" in result_data["error"].lower()
+    finally:
+        proc.terminate()
+        proc.wait()

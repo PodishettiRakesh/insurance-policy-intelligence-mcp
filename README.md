@@ -4,7 +4,7 @@ Backend-only MCP and Agentic AI project for searching, comparing, and analyzing 
 
 ## Overview
 
-This project implements a Model Context Protocol (MCP) server that allows clients to search a catalogue of insurance policies. The server exposes a `search_policies` tool that supports keyword matching with optional category and status filters.
+This project implements a Model Context Protocol (MCP) server that allows clients to search and compare insurance policies. The server exposes tools for searching policies with filters and comparing multiple policies side-by-side.
 
 ## Features
 
@@ -12,9 +12,10 @@ This project implements a Model Context Protocol (MCP) server that allows client
 - **Policy Catalogue**: 15 sample trade credit insurance policies
 - **Search Functionality**: Case-insensitive keyword matching across title, description, coverage, and tags
 - **Filters**: Optional category and status filtering
+- **Policy Comparison**: Compare 2-5 policies side-by-side across coverage, exclusions, premiums, deductibles, and eligibility
 - **MCP Server**: Official Python MCP SDK with stdio transport
 - **MCP Client**: Tool discovery and invocation support
-- **Comprehensive Tests**: 56 tests covering models, catalogue, search, server, client, and e2e flows
+- **Comprehensive Tests**: 75 tests covering models, catalogue, search, comparison, server, client, and e2e flows
 
 ## Technology Stack
 
@@ -33,6 +34,7 @@ insurance-policy-intelligence-mcp/
 │   ├── models.py          # Pydantic policy models
 │   ├── catalogue.py       # Policy catalogue loader
 │   ├── search.py          # Search implementation
+│   ├── comparison.py      # Policy comparison service
 │   └── server.py          # MCP server
 ├── data/
 │   └── policies.json      # Sample policy data
@@ -41,6 +43,7 @@ insurance-policy-intelligence-mcp/
 │   ├── test_models.py     # Model validation tests
 │   ├── test_catalogue.py  # Catalogue loading tests
 │   ├── test_search.py     # Search logic tests
+│   ├── test_comparison.py # Comparison logic tests
 │   ├── test_mcp_server.py # MCP server tests
 │   ├── test_client.py     # MCP client tests
 │   └── test_e2e.py        # End-to-end integration tests
@@ -127,6 +130,9 @@ pytest tests/test_models.py
 # Search tests
 pytest tests/test_search.py
 
+# Comparison tests
+pytest tests/test_comparison.py
+
 # MCP server tests
 pytest tests/test_mcp_server.py
 
@@ -157,6 +163,21 @@ The `search_policies_tool` accepts the following parameters:
 - **category** (optional): Restrict results to a specific policy category
 - **status** (optional): Restrict results to "active" or "inactive" policies
 - **limit** (optional): Maximum number of results to return (default: 10, max: 50)
+
+### Compare Policies Tool Parameters
+
+The `compare_policies_tool` accepts the following parameters:
+
+- **policy_ids** (required): List of policy IDs to compare (2-5 policies)
+
+The tool returns a detailed comparison including:
+- Policy details (title, category, provider, coverage, exclusions, premium, deductible, eligibility)
+- Coverage comparison (common items, unique items per policy)
+- Exclusions comparison (common items, unique items per policy)
+- Premium comparison (amounts, currencies, periods)
+- Deductible comparison (amounts, currencies, missing deductibles)
+- Eligibility comparison (requirements, structured criteria)
+- Missing fields identification
 
 ### Example Search Requests
 
@@ -204,6 +225,28 @@ The `search_policies_tool` accepts the following parameters:
     "category": "Single Buyer",
     "status": "active",
     "limit": 5
+  }
+}
+```
+
+### Example Compare Policies Requests
+
+**Compare two policies:**
+```json
+{
+  "name": "compare_policies_tool",
+  "arguments": {
+    "policy_ids": ["TCI-DOM-001", "TCI-DOM-002"]
+  }
+}
+```
+
+**Compare three policies:**
+```json
+{
+  "name": "compare_policies_tool",
+  "arguments": {
+    "policy_ids": ["TCI-DOM-001", "TCI-EXP-001", "TCI-SB-001"]
   }
 }
 ```
