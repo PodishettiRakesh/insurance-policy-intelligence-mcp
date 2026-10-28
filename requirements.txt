@@ -1,0 +1,2 @@
+# Requirements will be added as needed per stage
+# Stage 1.1: Project setup only - no dependencies required yet
