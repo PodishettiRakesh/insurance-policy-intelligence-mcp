@@ -1,3 +1,5 @@
 # Requirements will be added as needed per stage
 # Stage 1.2: Pydantic model
 pydantic>=2.0.0
+# Stage 1.5: Testing
+pytest>=8.0.0
