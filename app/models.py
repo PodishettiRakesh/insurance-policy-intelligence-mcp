@@ -75,3 +75,53 @@ class Policy(BaseModel):
             if item and item.strip():
                 validated.append(item.strip())
         return validated
+
+
+# Comparison models
+
+
+class ComparePoliciesRequest(BaseModel):
+    """Request model for comparing policies."""
+    policy_ids: List[str] = Field(..., min_length=2, max_length=5, description="List of policy IDs to compare (2-5 policies)")
+
+    @field_validator("policy_ids")
+    @classmethod
+    def validate_policy_ids(cls, v: List[str]) -> List[str]:
+        """Validate policy IDs are non-empty and unique."""
+        validated = []
+        seen = set()
+        for policy_id in v:
+            if not policy_id or not policy_id.strip():
+                raise ValueError("Policy ID cannot be empty")
+            policy_id = policy_id.strip()
+            if policy_id in seen:
+                raise ValueError(f"Duplicate policy ID: {policy_id}")
+            seen.add(policy_id)
+            validated.append(policy_id)
+        return validated
+
+
+class PolicyComparisonItem(BaseModel):
+    """Single policy data for comparison."""
+    policy_id: str
+    title: str
+    category: str
+    provider: str
+    coverage: List[str]
+    exclusions: List[str]
+    premium: Dict[str, Any]
+    deductible: Optional[Dict[str, Any]]
+    eligibility: Optional[Dict[str, Any]]
+
+
+class ComparisonResult(BaseModel):
+    """Result of policy comparison."""
+    success: bool
+    policies: List[PolicyComparisonItem]
+    coverage_comparison: Dict[str, Any]
+    exclusions_comparison: Dict[str, Any]
+    premium_comparison: Dict[str, Any]
+    deductible_comparison: Dict[str, Any]
+    eligibility_comparison: Dict[str, Any]
+    missing_fields: Dict[str, List[str]]
+    error: Optional[str] = None
