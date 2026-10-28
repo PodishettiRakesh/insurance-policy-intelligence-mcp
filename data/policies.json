@@ -1,0 +1,606 @@
+[
+  {
+    "policy_id": "TCI-DOM-001",
+    "title": "Domestic Trade Credit Insurance - Standard",
+    "category": "Domestic Trade Credit",
+    "provider": "CreditGuard Insurance Ltd",
+    "description": "Comprehensive protection against bad debts from domestic buyers with coverage up to 90% of invoice value.",
+    "coverage": [
+      "Protection against buyer insolvency and protracted default",
+      "Coverage up to 90% of insured debt",
+      "Buyer credit assessment and monitoring",
+      "Claims support and collection assistance"
+    ],
+    "exclusions": [
+      "Disputes over quality or delivery of goods",
+      "Contractual penalties or late payment fees",
+      "Pre-delivery losses"
+    ],
+    "premium": {
+      "amount": 25000,
+      "currency": "INR",
+      "period": "annual"
+    },
+    "deductible": {
+      "amount": 5000,
+      "currency": "INR"
+    },
+    "eligibility": {
+      "requirements": [
+        "Minimum annual turnover of INR 10 million",
+        "Business must be registered for at least 2 years",
+        "Financial statements must be provided"
+      ]
+    },
+    "effective_date": "2026-01-01",
+    "status": "active",
+    "tags": [
+      "domestic",
+      "trade credit",
+      "bad debt",
+      "insolvency",
+      "credit risk"
+    ]
+  },
+  {
+    "policy_id": "TCI-DOM-002",
+    "title": "Domestic Trade Credit Insurance - Premium",
+    "category": "Domestic Trade Credit",
+    "provider": "CreditGuard Insurance Ltd",
+    "description": "Enhanced domestic coverage with higher limits (95%) and additional risk management services.",
+    "coverage": [
+      "Coverage up to 95% of insured debts",
+      "Advanced risk analytics and portfolio monitoring",
+      "Dedicated account management",
+      "Expedited claims processing",
+      "Extended payment terms coverage"
+    ],
+    "exclusions": [
+      "Losses from buyers with known credit issues",
+      "Disputes unrelated to credit risk",
+      "Fraudulent transactions"
+    ],
+    "premium": {
+      "amount": 45000,
+      "currency": "INR",
+      "period": "annual"
+    },
+    "deductible": {
+      "amount": 3000,
+      "currency": "INR"
+    },
+    "eligibility": {
+      "requirements": [
+        "Minimum annual turnover of INR 50 million",
+        "Business must be registered for at least 3 years",
+        "Audited financial statements required"
+      ]
+    },
+    "effective_date": "2026-02-01",
+    "status": "active",
+    "tags": [
+      "domestic",
+      "premium",
+      "credit risk",
+      "high-value",
+      "risk management"
+    ]
+  },
+  {
+    "policy_id": "TCI-EXP-001",
+    "title": "Export Trade Credit Insurance - Basic",
+    "category": "Export Trade Credit",
+    "provider": "Global Credit Insurance Corp",
+    "description": "Fundamental protection for export transactions covering commercial and political risks.",
+    "coverage": [
+      "Commercial risk coverage (buyer insolvency, protracted default)",
+      "Political risk coverage (currency inconvertibility, transfer restrictions)",
+      "War and civil disturbance protection",
+      "Coverage up to 85% of insured value"
+    ],
+    "exclusions": [
+      "Losses from sanctioned countries",
+      "Currency fluctuations outside political risk events",
+      "Quality or delivery disputes"
+    ],
+    "premium": {
+      "amount": 35000,
+      "currency": "INR",
+      "period": "annual"
+    },
+    "deductible": {
+      "amount": 7000,
+      "currency": "INR"
+    },
+    "eligibility": {
+      "requirements": [
+        "Valid export license",
+        "Minimum annual export turnover of INR 5 million",
+        "Buyer information and credit history required"
+      ]
+    },
+    "effective_date": "2026-01-15",
+    "status": "active",
+    "tags": [
+      "export",
+      "political risk",
+      "commercial risk",
+      "international",
+      "SME"
+    ]
+  },
+  {
+    "policy_id": "TCI-EXP-002",
+    "title": "Export Trade Credit Insurance - Comprehensive",
+    "category": "Export Trade Credit",
+    "provider": "Global Credit Insurance Corp",
+    "description": "Full-spectrum export coverage with 90% limit and extended political risk protection.",
+    "coverage": [
+      "All major political and commercial risks",
+      "Currency fluctuation coverage",
+      "Contract frustration protection",
+      "Import license cancellation coverage",
+      "Coverage up to 90% with flexible premium options",
+      "Global buyer intelligence and market entry support"
+    ],
+    "exclusions": [
+      "Losses from high-risk excluded countries",
+      "Speculative trading losses",
+      "Internal management failures"
+    ],
+    "premium": {
+      "amount": 60000,
+      "currency": "INR",
+      "period": "annual"
+    },
+    "deductible": {
+      "amount": 5000,
+      "currency": "INR"
+    },
+    "eligibility": {
+      "requirements": [
+        "Minimum annual export turnover of INR 20 million",
+        "Established export business (3+ years)",
+        "Compliance with international trade regulations"
+      ]
+    },
+    "effective_date": "2026-03-01",
+    "status": "active",
+    "tags": [
+      "export",
+      "comprehensive",
+      "political risk",
+      "currency risk",
+      "global"
+    ]
+  },
+  {
+    "policy_id": "TCI-EXP-003",
+    "title": "Export Trade Credit Insurance - High-Risk Markets",
+    "category": "Export Trade Credit",
+    "provider": "Global Credit Insurance Corp",
+    "description": "Specialized coverage for exports to high-risk geographic regions with enhanced political risk protection.",
+    "coverage": [
+      "Enhanced political risk coverage including expropriation",
+      "Political violence and civil disturbance protection",
+      "Sovereign default coverage",
+      "Coverage up to 85% with risk-based pricing",
+      "Country risk reports and mitigation strategies"
+    ],
+    "exclusions": [
+      "Losses from countries under comprehensive sanctions",
+      "Acts of war (unless specifically covered)",
+      "Nuclear incidents"
+    ],
+    "premium": {
+      "amount": 80000,
+      "currency": "INR",
+      "period": "annual"
+    },
+    "deductible": {
+      "amount": 10000,
+      "currency": "INR"
+    },
+    "eligibility": {
+      "requirements": [
+        "Specialized export experience in target markets",
+        "Minimum annual export turnover of INR 15 million",
+        "Enhanced due diligence on buyers required"
+      ]
+    },
+    "effective_date": "2026-04-01",
+    "status": "active",
+    "tags": [
+      "export",
+      "high-risk",
+      "emerging markets",
+      "political violence",
+      "sovereign risk"
+    ]
+  },
+  {
+    "policy_id": "TCI-SB-001",
+    "title": "Single Buyer Insurance - Domestic",
+    "category": "Single Buyer",
+    "provider": "CreditGuard Insurance Ltd",
+    "description": "Targeted coverage for a specific domestic buyer relationship with flexible terms.",
+    "coverage": [
+      "Coverage for one specific domestic buyer",
+      "Coverage up to 90% of insured exposure",
+      "Customizable policy terms",
+      "Buyer financial monitoring and early warning alerts"
+    ],
+    "exclusions": [
+      "Losses from other buyers not specified in policy",
+      "Known credit issues with the buyer at policy inception"
+    ],
+    "premium": {
+      "amount": 15000,
+      "currency": "INR",
+      "period": "annual"
+    },
+    "deductible": {
+      "amount": 4000,
+      "currency": "INR"
+    },
+    "eligibility": {
+      "requirements": [
+        "Buyer must have a credit rating assessment",
+        "Maximum exposure limit defined",
+        "Contract duration specified"
+      ]
+    },
+    "effective_date": "2026-01-01",
+    "status": "active",
+    "tags": [
+      "single buyer",
+      "domestic",
+      "concentration risk",
+      "buyer monitoring",
+      "flexible"
+    ]
+  },
+  {
+    "policy_id": "TCI-SB-002",
+    "title": "Single Buyer Insurance - Export",
+    "category": "Single Buyer",
+    "provider": "Global Credit Insurance Corp",
+    "description": "Focused protection for a specific export buyer with commercial and political risk coverage.",
+    "coverage": [
+      "Commercial and political risk coverage for one international buyer",
+      "Coverage up to 85% with policy duration matching contract terms",
+      "Buyer country risk assessment",
+      "Political risk monitoring"
+    ],
+    "exclusions": [
+      "Losses from other export buyers",
+      "Political risks in excluded countries"
+    ],
+    "premium": {
+      "amount": 25000,
+      "currency": "INR",
+      "period": "annual"
+    },
+    "deductible": {
+      "amount": 6000,
+      "currency": "INR"
+    },
+    "eligibility": {
+      "requirements": [
+        "Export contract with specified buyer",
+        "Buyer country risk assessment completed",
+        "Contract value and terms documented"
+      ]
+    },
+    "effective_date": "2026-02-15",
+    "status": "active",
+    "tags": [
+      "single buyer",
+      "export",
+      "commercial risk",
+      "political risk",
+      "large contracts"
+    ]
+  },
+  {
+    "policy_id": "TCI-SB-003",
+    "title": "Single Buyer Insurance - Project-Based",
+    "category": "Single Buyer",
+    "provider": "Global Credit Insurance Corp",
+    "description": "Project-specific coverage for long-term contracts with milestone-based protection.",
+    "coverage": [
+      "Coverage adjusts based on project completion stages",
+      "Contract frustration coverage",
+      "Performance bond protection",
+      "Milestone-based claim settlement"
+    ],
+    "exclusions": [
+      "Project delays not caused by credit events",
+      "Design or engineering errors",
+      "Force majeure events (unless covered)"
+    ],
+    "premium": {
+      "amount": 40000,
+      "currency": "INR",
+      "period": "annual"
+    },
+    "deductible": {
+      "amount": 8000,
+      "currency": "INR"
+    },
+    "eligibility": {
+      "requirements": [
+        "Detailed project plan and milestones",
+        "Buyer creditworthiness verified",
+        "Contract must specify payment terms linked to milestones"
+      ]
+    },
+    "effective_date": "2026-05-01",
+    "status": "active",
+    "tags": [
+      "single buyer",
+      "project-based",
+      "milestones",
+      "construction",
+      "infrastructure"
+    ]
+  },
+  {
+    "policy_id": "TCI-WT-001",
+    "title": "Whole Turnover Insurance - Domestic",
+    "category": "Whole Turnover",
+    "provider": "CreditGuard Insurance Ltd",
+    "description": "Blanket coverage for all domestic sales with automated risk assessment and competitive pricing.",
+    "coverage": [
+      "Coverage for all domestic sales transactions",
+      "Automated underwriting with real-time risk assessment",
+      "Coverage up to 90% with volume-based premium discounts",
+      "Portfolio management dashboard",
+      "Ongoing buyer monitoring"
+    ],
+    "exclusions": [
+      "Sales to excluded high-risk buyers",
+      "Cash-on-delivery transactions",
+      "Related party transactions"
+    ],
+    "premium": {
+      "amount": 55000,
+      "currency": "INR",
+      "period": "annual"
+    },
+    "deductible": {
+      "amount": 7500,
+      "currency": "INR"
+    },
+    "eligibility": {
+      "requirements": [
+        "Minimum annual domestic turnover of INR 25 million",
+        "Diverse customer base (no single buyer > 30% of turnover)",
+        "Integrated accounting system required"
+      ]
+    },
+    "effective_date": "2026-01-01",
+    "status": "active",
+    "tags": [
+      "whole turnover",
+      "domestic",
+      "blanket coverage",
+      "automated",
+      "portfolio"
+    ]
+  },
+  {
+    "policy_id": "TCI-WT-002",
+    "title": "Whole Turnover Insurance - Export",
+    "category": "Whole Turnover",
+    "provider": "Global Credit Insurance Corp",
+    "description": "Comprehensive coverage for all export transactions with global risk management.",
+    "coverage": [
+      "Coverage for all international sales",
+      "Global buyer database with continuous monitoring",
+      "Coverage up to 85% with multi-currency support",
+      "Political risk protection",
+      "Country-specific limits"
+    ],
+    "exclusions": [
+      "Exports to sanctioned countries",
+      "Sales without proper documentation",
+      "High-risk excluded buyers"
+    ],
+    "premium": {
+      "amount": 90000,
+      "currency": "INR",
+      "period": "annual"
+    },
+    "deductible": {
+      "amount": 12000,
+      "currency": "INR"
+    },
+    "eligibility": {
+      "requirements": [
+        "Minimum annual export turnover of INR 30 million",
+        "Multi-country export portfolio",
+        "Compliance with export regulations"
+      ]
+    },
+    "effective_date": "2026-03-15",
+    "status": "active",
+    "tags": [
+      "whole turnover",
+      "export",
+      "global",
+      "multi-currency",
+      "political risk"
+    ]
+  },
+  {
+    "policy_id": "TCI-WT-003",
+    "title": "Whole Turnover Insurance - Hybrid",
+    "category": "Whole Turnover",
+    "provider": "Global Credit Insurance Corp",
+    "description": "Combined domestic and export coverage with unified policy management.",
+    "coverage": [
+      "Coverage for both domestic and export sales under one policy",
+      "Flexible coverage limits per region (90% domestic, 85% export)",
+      "Integrated risk management platform",
+      "Global buyer insights",
+      "Optimized premium structure for mixed trade portfolios"
+    ],
+    "exclusions": [
+      "Exclusions apply separately for domestic and export",
+      "High-risk countries and buyers as per policy terms"
+    ],
+    "premium": {
+      "amount": 120000,
+      "currency": "INR",
+      "period": "annual"
+    },
+    "deductible": {
+      "amount": 10000,
+      "currency": "INR"
+    },
+    "eligibility": {
+      "requirements": [
+        "Minimum total turnover of INR 50 million",
+        "Both domestic and export operations",
+        "Integrated financial reporting system"
+      ]
+    },
+    "effective_date": "2026-04-15",
+    "status": "active",
+    "tags": [
+      "whole turnover",
+      "hybrid",
+      "domestic",
+      "export",
+      "unified"
+    ]
+  },
+  {
+    "policy_id": "TCI-SB-004",
+    "title": "Single Buyer Insurance - Government",
+    "category": "Single Buyer",
+    "provider": "Global Credit Insurance Corp",
+    "description": "Specialized coverage for government buyer contracts with sovereign risk protection.",
+    "coverage": [
+      "Enhanced sovereign risk coverage including budgetary constraints",
+      "Coverage up to 90% with extended claim periods",
+      "Regulatory change protection",
+      "Contract cancellation coverage"
+    ],
+    "exclusions": [
+      "Contract breaches by the insured",
+      "Political acts by the insured's home country",
+      "Force majeure not related to sovereign risk"
+    ],
+    "premium": {
+      "amount": 30000,
+      "currency": "INR",
+      "period": "annual"
+    },
+    "deductible": {
+      "amount": 5000,
+      "currency": "INR"
+    },
+    "eligibility": {
+      "requirements": [
+        "Valid government contract or tender",
+        "Compliance with procurement regulations",
+        "Contract value and payment terms documented"
+      ]
+    },
+    "effective_date": "2026-06-01",
+    "status": "active",
+    "tags": [
+      "single buyer",
+      "government",
+      "sovereign risk",
+      "public sector",
+      "regulatory"
+    ]
+  },
+  {
+    "policy_id": "TCI-DOM-003",
+    "title": "Domestic Trade Credit Insurance - SME",
+    "category": "Domestic Trade Credit",
+    "provider": "CreditGuard Insurance Ltd",
+    "description": "Simplified domestic coverage for small businesses with streamlined underwriting.",
+    "coverage": [
+      "Coverage up to 85% with fixed premium rates",
+      "Quick turnaround for policy issuance",
+      "Online buyer verification",
+      "Basic risk monitoring"
+    ],
+    "exclusions": [
+      "Buyers with known payment issues",
+      "Cash sales transactions",
+      "Sales exceeding annual turnover limit"
+    ],
+    "premium": {
+      "amount": 12000,
+      "currency": "INR",
+      "period": "annual"
+    },
+    "deductible": {
+      "amount": 3000,
+      "currency": "INR"
+    },
+    "eligibility": {
+      "requirements": [
+        "Annual turnover under INR 5 million",
+        "Business registered for at least 1 year",
+        "Basic financial information required"
+      ]
+    },
+    "effective_date": "2026-07-01",
+    "status": "active",
+    "tags": [
+      "domestic",
+      "SME",
+      "simplified",
+      "small business",
+      "streamlined"
+    ]
+  },
+  {
+    "policy_id": "TCI-LEGACY-001",
+    "title": "Legacy Trade Credit Policy - Retired",
+    "category": "Domestic Trade Credit",
+    "provider": "CreditGuard Insurance Ltd",
+    "description": "Legacy policy no longer offered to new customers but maintained for existing policyholders.",
+    "coverage": [
+      "Basic domestic trade credit coverage",
+      "Standard insolvency protection",
+      "Limited buyer monitoring"
+    ],
+    "exclusions": [
+      "No coverage for new buyer relationships",
+      "Limited political risk coverage",
+      "No extended payment terms"
+    ],
+    "premium": {
+      "amount": 18000,
+      "currency": "INR",
+      "period": "annual"
+    },
+    "deductible": {
+      "amount": 4000,
+      "currency": "INR"
+    },
+    "eligibility": {
+      "requirements": [
+        "Existing policyholders only",
+        "No new applications accepted"
+      ]
+    },
+    "effective_date": "2020-01-01",
+    "status": "inactive",
+    "tags": [
+      "legacy",
+      "retired",
+      "existing customers",
+      "renewal only",
+      "deprecated"
+    ]
+  }
+]
