@@ -3,3 +3,5 @@
 pydantic>=2.0.0
 # Stage 1.5: Testing
 pytest>=8.0.0
+# Stage 3.1: MCP Python SDK
+mcp[cli]>=1.0.0
