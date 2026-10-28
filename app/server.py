@@ -38,8 +38,8 @@ def search_policies_tool(
             limit=limit
         )
 
-        # Convert policies to dict for JSON serialization
-        results = [policy.model_dump() for policy in policies]
+        # Convert policies to dict for JSON serialization with date handling
+        results = [policy.model_dump(mode='json') for policy in policies]
 
         # Return as JSON string
         import json
