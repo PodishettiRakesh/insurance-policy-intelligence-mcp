@@ -1,0 +1,452 @@
+{
+  "dataset_metadata": {
+    "total_questions": 30,
+    "by_category": {
+      "search": 10,
+      "compare": 5,
+      "eligibility": 8,
+      "ambiguous": 3,
+      "unsupported": 4
+    },
+    "by_difficulty": {
+      "easy": 8,
+      "medium": 16,
+      "hard": 6
+    }
+  },
+  "search_evaluation": {
+    "category": "search",
+    "total_queries": 10,
+    "successful": 10,
+    "failed": 0,
+    "results": [
+      {
+        "query_id": "search_001",
+        "query": "Find domestic trade credit insurance policies",
+        "simple_query": "domestic trade credit",
+        "retrieved": [
+          "TCI-DOM-001",
+          "TCI-DOM-002",
+          "TCI-DOM-003",
+          "TCI-LEGACY-001"
+        ],
+        "relevant": [
+          "TCI-DOM-001",
+          "TCI-DOM-002",
+          "TCI-DOM-003"
+        ],
+        "count": 4,
+        "precision_at_5": 0.75,
+        "recall_at_5": 1.0,
+        "precision_at_10": 0.75,
+        "recall_at_10": 1.0,
+        "mrr": 1.0
+      },
+      {
+        "query_id": "search_002",
+        "query": "Search for export trade credit insurance",
+        "simple_query": "export trade credit",
+        "retrieved": [
+          "TCI-EXP-001",
+          "TCI-EXP-002",
+          "TCI-EXP-003"
+        ],
+        "relevant": [
+          "TCI-EXP-001",
+          "TCI-EXP-002",
+          "TCI-EXP-003"
+        ],
+        "count": 3,
+        "precision_at_5": 1.0,
+        "recall_at_5": 1.0,
+        "precision_at_10": 1.0,
+        "recall_at_10": 1.0,
+        "mrr": 1.0
+      },
+      {
+        "query_id": "search_003",
+        "query": "Find single buyer insurance policies",
+        "simple_query": "single buyer buyer",
+        "retrieved": [],
+        "relevant": [
+          "TCI-SB-001",
+          "TCI-SB-002",
+          "TCI-SB-003",
+          "TCI-SB-004"
+        ],
+        "count": 0,
+        "precision_at_5": 0.0,
+        "recall_at_5": 0.0,
+        "precision_at_10": 0.0,
+        "recall_at_10": 0.0,
+        "mrr": 0.0
+      },
+      {
+        "query_id": "search_004",
+        "query": "Show me whole turnover insurance",
+        "simple_query": "whole turnover",
+        "retrieved": [
+          "TCI-WT-001",
+          "TCI-WT-002",
+          "TCI-WT-003"
+        ],
+        "relevant": [
+          "TCI-WT-001",
+          "TCI-WT-002",
+          "TCI-WT-003"
+        ],
+        "count": 3,
+        "precision_at_5": 1.0,
+        "recall_at_5": 1.0,
+        "precision_at_10": 1.0,
+        "recall_at_10": 1.0,
+        "mrr": 1.0
+      },
+      {
+        "query_id": "search_005",
+        "query": "I need insurance for bad debt protection",
+        "simple_query": "bad debt",
+        "retrieved": [
+          "TCI-DOM-001"
+        ],
+        "relevant": [
+          "TCI-DOM-001",
+          "TCI-DOM-002",
+          "TCI-DOM-003",
+          "TCI-EXP-001",
+          "TCI-EXP-002",
+          "TCI-EXP-003"
+        ],
+        "count": 1,
+        "precision_at_5": 1.0,
+        "recall_at_5": 0.16666666666666666,
+        "precision_at_10": 1.0,
+        "recall_at_10": 0.16666666666666666,
+        "mrr": 1.0
+      },
+      {
+        "query_id": "search_006",
+        "query": "Find policies with coverage for buyer insolvency",
+        "simple_query": "insolvency buyer",
+        "retrieved": [],
+        "relevant": [
+          "TCI-DOM-001",
+          "TCI-DOM-002",
+          "TCI-DOM-003",
+          "TCI-EXP-001",
+          "TCI-EXP-002",
+          "TCI-EXP-003"
+        ],
+        "count": 0,
+        "precision_at_5": 0.0,
+        "recall_at_5": 0.0,
+        "precision_at_10": 0.0,
+        "recall_at_10": 0.0,
+        "mrr": 0.0
+      },
+      {
+        "query_id": "search_007",
+        "query": "Search for SME policies",
+        "simple_query": "sme",
+        "retrieved": [
+          "TCI-DOM-001",
+          "TCI-EXP-001",
+          "TCI-SB-002",
+          "TCI-WT-001",
+          "TCI-DOM-003"
+        ],
+        "relevant": [
+          "TCI-DOM-003"
+        ],
+        "count": 5,
+        "precision_at_5": 0.2,
+        "recall_at_5": 1.0,
+        "precision_at_10": 0.2,
+        "recall_at_10": 1.0,
+        "mrr": 0.2
+      },
+      {
+        "query_id": "search_008",
+        "query": "Find policies with high risk market coverage",
+        "simple_query": "credit",
+        "retrieved": [
+          "TCI-DOM-001",
+          "TCI-DOM-002",
+          "TCI-EXP-001",
+          "TCI-EXP-002",
+          "TCI-EXP-003",
+          "TCI-DOM-003",
+          "TCI-LEGACY-001"
+        ],
+        "relevant": [
+          "TCI-EXP-003"
+        ],
+        "count": 7,
+        "precision_at_5": 0.2,
+        "recall_at_5": 1.0,
+        "precision_at_10": 0.14285714285714285,
+        "recall_at_10": 1.0,
+        "mrr": 0.2
+      },
+      {
+        "query_id": "search_009",
+        "query": "Search for government contract insurance",
+        "simple_query": "credit",
+        "retrieved": [
+          "TCI-DOM-001",
+          "TCI-DOM-002",
+          "TCI-EXP-001",
+          "TCI-EXP-002",
+          "TCI-EXP-003",
+          "TCI-DOM-003",
+          "TCI-LEGACY-001"
+        ],
+        "relevant": [
+          "TCI-SB-004"
+        ],
+        "count": 7,
+        "precision_at_5": 0.0,
+        "recall_at_5": 0.0,
+        "precision_at_10": 0.0,
+        "recall_at_10": 0.0,
+        "mrr": 0.0
+      },
+      {
+        "query_id": "search_010",
+        "query": "Find active credit insurance policies",
+        "simple_query": "credit",
+        "retrieved": [
+          "TCI-DOM-001",
+          "TCI-DOM-002",
+          "TCI-EXP-001",
+          "TCI-EXP-002",
+          "TCI-EXP-003",
+          "TCI-DOM-003",
+          "TCI-LEGACY-001"
+        ],
+        "relevant": [
+          "TCI-DOM-001",
+          "TCI-DOM-002",
+          "TCI-DOM-003",
+          "TCI-EXP-001",
+          "TCI-EXP-002",
+          "TCI-EXP-003",
+          "TCI-SB-001",
+          "TCI-SB-002",
+          "TCI-SB-003",
+          "TCI-SB-004",
+          "TCI-WT-001",
+          "TCI-WT-002",
+          "TCI-WT-003"
+        ],
+        "count": 7,
+        "precision_at_5": 1.0,
+        "recall_at_5": 0.38461538461538464,
+        "precision_at_10": 0.8571428571428571,
+        "recall_at_10": 0.46153846153846156,
+        "mrr": 1.0
+      }
+    ],
+    "average_metrics": {
+      "precision_at_k": {
+        "5": 0.515,
+        "10": 0.495
+      },
+      "recall_at_k": {
+        "5": 0.5551282051282052,
+        "10": 0.5628205128205128
+      },
+      "mrr": 0.54
+    },
+    "note": "Used direct search with keyword extraction (agent unavailable)"
+  },
+  "comparison_evaluation": {
+    "category": "compare",
+    "total_queries": 5,
+    "successful": 5,
+    "failed": 0,
+    "results": [
+      {
+        "query_id": "compare_001",
+        "query": "Compare policies TCI-DOM-001 and TCI-DOM-002",
+        "expected": [
+          "TCI-DOM-001",
+          "TCI-DOM-002"
+        ],
+        "compared": [
+          "TCI-DOM-001",
+          "TCI-DOM-002"
+        ],
+        "success": true,
+        "all_expected_compared": true
+      },
+      {
+        "query_id": "compare_002",
+        "query": "Compare TCI-EXP-001, TCI-EXP-002, and TCI-EXP-003",
+        "expected": [
+          "TCI-EXP-001",
+          "TCI-EXP-002",
+          "TCI-EXP-003"
+        ],
+        "compared": [
+          "TCI-EXP-001",
+          "TCI-EXP-002",
+          "TCI-EXP-003"
+        ],
+        "success": true,
+        "all_expected_compared": true
+      },
+      {
+        "query_id": "compare_003",
+        "query": "Compare the domestic standard and premium policies",
+        "expected": [
+          "TCI-DOM-001",
+          "TCI-DOM-002"
+        ],
+        "compared": [
+          "TCI-DOM-001",
+          "TCI-DOM-002"
+        ],
+        "success": true,
+        "all_expected_compared": true
+      },
+      {
+        "query_id": "compare_004",
+        "query": "Compare single buyer domestic and export policies",
+        "expected": [
+          "TCI-SB-001",
+          "TCI-SB-002"
+        ],
+        "compared": [
+          "TCI-SB-001",
+          "TCI-SB-002"
+        ],
+        "success": true,
+        "all_expected_compared": true
+      },
+      {
+        "query_id": "compare_005",
+        "query": "I want to compare whole turnover domestic and export options",
+        "expected": [
+          "TCI-WT-001",
+          "TCI-WT-002"
+        ],
+        "compared": [
+          "TCI-WT-001",
+          "TCI-WT-002"
+        ],
+        "success": true,
+        "all_expected_compared": true
+      }
+    ]
+  },
+  "eligibility_evaluation": {
+    "category": "eligibility",
+    "total_queries": 8,
+    "successful": 8,
+    "failed": 0,
+    "correct_status": 4,
+    "correctness_rate": 0.5,
+    "results": [
+      {
+        "query_id": "eligibility_001",
+        "query": "Check eligibility for TCI-DOM-001 with annual turnover of 15 million, business age 3 years, and financial statements",
+        "policy_id": "TCI-DOM-001",
+        "expected_status": "eligible",
+        "actual_status": "eligible",
+        "status_match": true,
+        "success": true
+      },
+      {
+        "query_id": "eligibility_002",
+        "query": "Am I eligible for TCI-DOM-002? I have 30 million turnover, 2 years in business, and audited financial statements",
+        "policy_id": "TCI-DOM-002",
+        "expected_status": "ineligible",
+        "actual_status": "ineligible",
+        "status_match": true,
+        "success": true
+      },
+      {
+        "query_id": "eligibility_003",
+        "query": "Check eligibility for TCI-EXP-002 with 25 million export turnover, 4 years export experience, and regulatory compliance",
+        "policy_id": "TCI-EXP-002",
+        "expected_status": "eligible",
+        "actual_status": "eligible",
+        "status_match": true,
+        "success": true
+      },
+      {
+        "query_id": "eligibility_004",
+        "query": "Can I get TCI-DOM-003? My turnover is 4 million and I've been in business for 1 year",
+        "policy_id": "TCI-DOM-003",
+        "expected_status": "eligible",
+        "actual_status": "undetermined",
+        "status_match": false,
+        "success": true
+      },
+      {
+        "query_id": "eligibility_005",
+        "query": "Check eligibility for TCI-WT-003 with 60 million total turnover and both domestic and export operations",
+        "policy_id": "TCI-WT-003",
+        "expected_status": "eligible",
+        "actual_status": "undetermined",
+        "status_match": false,
+        "success": true
+      },
+      {
+        "query_id": "eligibility_006",
+        "query": "Am I eligible for TCI-SB-001? The buyer has a credit rating of A",
+        "policy_id": "TCI-SB-001",
+        "expected_status": "eligible",
+        "actual_status": "undetermined",
+        "status_match": false,
+        "success": true
+      },
+      {
+        "query_id": "eligibility_007",
+        "query": "Check eligibility for TCI-SB-004 with a valid government contract",
+        "policy_id": "TCI-SB-004",
+        "expected_status": "eligible",
+        "actual_status": "undetermined",
+        "status_match": false,
+        "success": true
+      },
+      {
+        "query_id": "eligibility_008",
+        "query": "Check eligibility for TCI-DOM-001",
+        "policy_id": "TCI-DOM-001",
+        "expected_status": "undetermined",
+        "actual_status": "undetermined",
+        "status_match": true,
+        "success": true
+      }
+    ]
+  },
+  "agent_evaluation": {
+    "category": "agent",
+    "total_queries": 0,
+    "successful": 0,
+    "failed": 0,
+    "grounded_count": 0,
+    "groundedness_score": 0.0,
+    "results": [],
+    "note": "Agent evaluation skipped due to missing dependencies"
+  },
+  "overall_metrics": {
+    "precision_at_k": {
+      "5": 0.515,
+      "10": 0.495
+    },
+    "recall_at_k": {
+      "5": 0.5551282051282052,
+      "10": 0.5628205128205128
+    },
+    "mrr": 0.54,
+    "answer_correctness": 0.5,
+    "groundedness_score": 0.0,
+    "total_queries": 31,
+    "successful_queries": 23,
+    "failed_queries": 0,
+    "success_rate": 0.7419354838709677
+  }
+}

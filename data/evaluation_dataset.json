@@ -1,0 +1,310 @@
+{
+  "version": "1.0",
+  "description": "Evaluation dataset for insurance policy intelligence system",
+  "questions": [
+    {
+      "query_id": "search_001",
+      "query": "Find domestic trade credit insurance policies",
+      "expected_policies": ["TCI-DOM-001", "TCI-DOM-002", "TCI-DOM-003"],
+      "expected_outcome": "search",
+      "category": "search",
+      "difficulty": "easy"
+    },
+    {
+      "query_id": "search_002",
+      "query": "Search for export trade credit insurance",
+      "expected_policies": ["TCI-EXP-001", "TCI-EXP-002", "TCI-EXP-003"],
+      "expected_outcome": "search",
+      "category": "search",
+      "difficulty": "easy"
+    },
+    {
+      "query_id": "search_003",
+      "query": "Find single buyer insurance policies",
+      "expected_policies": ["TCI-SB-001", "TCI-SB-002", "TCI-SB-003", "TCI-SB-004"],
+      "expected_outcome": "search",
+      "category": "search",
+      "difficulty": "easy"
+    },
+    {
+      "query_id": "search_004",
+      "query": "Show me whole turnover insurance",
+      "expected_policies": ["TCI-WT-001", "TCI-WT-002", "TCI-WT-003"],
+      "expected_outcome": "search",
+      "category": "search",
+      "difficulty": "easy"
+    },
+    {
+      "query_id": "search_005",
+      "query": "I need insurance for bad debt protection",
+      "expected_policies": ["TCI-DOM-001", "TCI-DOM-002", "TCI-DOM-003", "TCI-EXP-001", "TCI-EXP-002", "TCI-EXP-003"],
+      "expected_outcome": "search",
+      "category": "search",
+      "difficulty": "medium"
+    },
+    {
+      "query_id": "search_006",
+      "query": "Find policies with coverage for buyer insolvency",
+      "expected_policies": ["TCI-DOM-001", "TCI-DOM-002", "TCI-DOM-003", "TCI-EXP-001", "TCI-EXP-002", "TCI-EXP-003"],
+      "expected_outcome": "search",
+      "category": "search",
+      "difficulty": "medium"
+    },
+    {
+      "query_id": "search_007",
+      "query": "Search for SME policies",
+      "expected_policies": ["TCI-DOM-003"],
+      "expected_outcome": "search",
+      "category": "search",
+      "difficulty": "medium"
+    },
+    {
+      "query_id": "search_008",
+      "query": "Find policies with high risk market coverage",
+      "expected_policies": ["TCI-EXP-003"],
+      "expected_outcome": "search",
+      "category": "search",
+      "difficulty": "medium"
+    },
+    {
+      "query_id": "search_009",
+      "query": "Search for government contract insurance",
+      "expected_policies": ["TCI-SB-004"],
+      "expected_outcome": "search",
+      "category": "search",
+      "difficulty": "medium"
+    },
+    {
+      "query_id": "search_010",
+      "query": "Find active credit insurance policies",
+      "expected_policies": ["TCI-DOM-001", "TCI-DOM-002", "TCI-DOM-003", "TCI-EXP-001", "TCI-EXP-002", "TCI-EXP-003", "TCI-SB-001", "TCI-SB-002", "TCI-SB-003", "TCI-SB-004", "TCI-WT-001", "TCI-WT-002", "TCI-WT-003"],
+      "expected_outcome": "search",
+      "category": "search",
+      "difficulty": "easy"
+    },
+    {
+      "query_id": "compare_001",
+      "query": "Compare policies TCI-DOM-001 and TCI-DOM-002",
+      "expected_policies": ["TCI-DOM-001", "TCI-DOM-002"],
+      "expected_outcome": "compare",
+      "category": "compare",
+      "difficulty": "easy"
+    },
+    {
+      "query_id": "compare_002",
+      "query": "Compare TCI-EXP-001, TCI-EXP-002, and TCI-EXP-003",
+      "expected_policies": ["TCI-EXP-001", "TCI-EXP-002", "TCI-EXP-003"],
+      "expected_outcome": "compare",
+      "category": "compare",
+      "difficulty": "easy"
+    },
+    {
+      "query_id": "compare_003",
+      "query": "Compare the domestic standard and premium policies",
+      "expected_policies": ["TCI-DOM-001", "TCI-DOM-002"],
+      "expected_outcome": "compare",
+      "category": "compare",
+      "difficulty": "medium"
+    },
+    {
+      "query_id": "compare_004",
+      "query": "Compare single buyer domestic and export policies",
+      "expected_policies": ["TCI-SB-001", "TCI-SB-002"],
+      "expected_outcome": "compare",
+      "category": "compare",
+      "difficulty": "medium"
+    },
+    {
+      "query_id": "compare_005",
+      "query": "I want to compare whole turnover domestic and export options",
+      "expected_policies": ["TCI-WT-001", "TCI-WT-002"],
+      "expected_outcome": "compare",
+      "category": "compare",
+      "difficulty": "medium"
+    },
+    {
+      "query_id": "eligibility_001",
+      "query": "Check eligibility for TCI-DOM-001 with annual turnover of 15 million, business age 3 years, and financial statements",
+      "expected_policies": ["TCI-DOM-001"],
+      "expected_outcome": "eligibility",
+      "category": "eligibility",
+      "difficulty": "easy",
+      "applicant_info": {
+        "annual_turnover": 15000000,
+        "business_age_years": 3,
+        "financial_statements": true
+      },
+      "expected_status": "eligible"
+    },
+    {
+      "query_id": "eligibility_002",
+      "query": "Am I eligible for TCI-DOM-002? I have 30 million turnover, 2 years in business, and audited financial statements",
+      "expected_policies": ["TCI-DOM-002"],
+      "expected_outcome": "eligibility",
+      "category": "eligibility",
+      "difficulty": "medium",
+      "applicant_info": {
+        "annual_turnover": 30000000,
+        "business_age_years": 2,
+        "audited_financial_statements": true
+      },
+      "expected_status": "ineligible"
+    },
+    {
+      "query_id": "eligibility_003",
+      "query": "Check eligibility for TCI-EXP-002 with 25 million export turnover, 4 years export experience, and regulatory compliance",
+      "expected_policies": ["TCI-EXP-002"],
+      "expected_outcome": "eligibility",
+      "category": "eligibility",
+      "difficulty": "medium",
+      "applicant_info": {
+        "annual_turnover": 25000000,
+        "export_years": 4,
+        "regulatory_compliance": true
+      },
+      "expected_status": "eligible"
+    },
+    {
+      "query_id": "eligibility_004",
+      "query": "Can I get TCI-DOM-003? My turnover is 4 million and I've been in business for 1 year",
+      "expected_policies": ["TCI-DOM-003"],
+      "expected_outcome": "eligibility",
+      "category": "eligibility",
+      "difficulty": "medium",
+      "applicant_info": {
+        "annual_turnover": 4000000,
+        "business_age_years": 1
+      },
+      "expected_status": "eligible"
+    },
+    {
+      "query_id": "eligibility_005",
+      "query": "Check eligibility for TCI-WT-003 with 60 million total turnover and both domestic and export operations",
+      "expected_policies": ["TCI-WT-003"],
+      "expected_outcome": "eligibility",
+      "category": "eligibility",
+      "difficulty": "medium",
+      "applicant_info": {
+        "annual_turnover": 60000000,
+        "has_domestic_operations": true,
+        "has_export_operations": true
+      },
+      "expected_status": "eligible"
+    },
+    {
+      "query_id": "eligibility_006",
+      "query": "Am I eligible for TCI-SB-001? The buyer has a credit rating of A",
+      "expected_policies": ["TCI-SB-001"],
+      "expected_outcome": "eligibility",
+      "category": "eligibility",
+      "difficulty": "medium",
+      "applicant_info": {
+        "credit_rating": "A"
+      },
+      "expected_status": "eligible"
+    },
+    {
+      "query_id": "eligibility_007",
+      "query": "Check eligibility for TCI-SB-004 with a valid government contract",
+      "expected_policies": ["TCI-SB-004"],
+      "expected_outcome": "eligibility",
+      "category": "eligibility",
+      "difficulty": "medium",
+      "applicant_info": {
+        "government_contract": true
+      },
+      "expected_status": "eligible"
+    },
+    {
+      "query_id": "eligibility_008",
+      "query": "Check eligibility for TCI-DOM-001",
+      "expected_policies": ["TCI-DOM-001"],
+      "expected_outcome": "eligibility",
+      "category": "eligibility",
+      "difficulty": "hard",
+      "applicant_info": {},
+      "expected_status": "undetermined"
+    },
+    {
+      "query_id": "ambiguous_001",
+      "query": "I need insurance",
+      "expected_policies": [],
+      "expected_outcome": "search",
+      "category": "ambiguous",
+      "difficulty": "hard"
+    },
+    {
+      "query_id": "ambiguous_002",
+      "query": "Tell me about the policies",
+      "expected_policies": [],
+      "expected_outcome": "search",
+      "category": "ambiguous",
+      "difficulty": "hard"
+    },
+    {
+      "query_id": "ambiguous_003",
+      "query": "Which one is better?",
+      "expected_policies": [],
+      "expected_outcome": "compare",
+      "category": "ambiguous",
+      "difficulty": "hard"
+    },
+    {
+      "query_id": "unsupported_001",
+      "query": "What is the weather like today?",
+      "expected_policies": [],
+      "expected_outcome": "none",
+      "category": "unsupported",
+      "difficulty": "easy"
+    },
+    {
+      "query_id": "unsupported_002",
+      "query": "Tell me a joke",
+      "expected_policies": [],
+      "expected_outcome": "none",
+      "category": "unsupported",
+      "difficulty": "easy"
+    },
+    {
+      "query_id": "unsupported_003",
+      "query": "What's the stock price of Apple?",
+      "expected_policies": [],
+      "expected_outcome": "none",
+      "category": "unsupported",
+      "difficulty": "easy"
+    },
+    {
+      "query_id": "unsupported_004",
+      "query": "Does this policy cover medical expenses?",
+      "expected_policies": [],
+      "expected_outcome": "search",
+      "category": "unsupported",
+      "difficulty": "medium",
+      "note": "This is trade credit insurance, not health insurance"
+    },
+    {
+      "query_id": "unsupported_005",
+      "query": "Does TCI-DOM-001 cover car accidents?",
+      "expected_policies": ["TCI-DOM-001"],
+      "expected_outcome": "search",
+      "category": "unsupported",
+      "difficulty": "medium",
+      "note": "Agent should clarify this is trade credit insurance, not auto insurance"
+    }
+  ],
+  "metadata": {
+    "total_questions": 30,
+    "by_category": {
+      "search": 10,
+      "compare": 5,
+      "eligibility": 8,
+      "ambiguous": 3,
+      "unsupported": 4
+    },
+    "by_difficulty": {
+      "easy": 8,
+      "medium": 16,
+      "hard": 6
+    }
+  }
+}
