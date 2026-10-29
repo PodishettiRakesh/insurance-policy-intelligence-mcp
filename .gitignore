@@ -2,6 +2,8 @@ prd.txt
 .env
 test_mcp_client.py
 milestone4 plan.md
+evaluation/
+*results*
 
 # Python
 __pycache__/

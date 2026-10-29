@@ -77,7 +77,49 @@ class Policy(BaseModel):
         return validated
 
 
-# Comparison models
+# Structured comparison models
+
+
+class CoverageComparison(BaseModel):
+    """Structured comparison of coverage items across policies."""
+    common_items: List[str] = Field(default_factory=list, description="Coverage items common to all policies")
+    unique_by_policy: Dict[str, List[str]] = Field(default_factory=dict, description="Coverage items unique to each policy")
+    coverage_counts: Dict[str, int] = Field(default_factory=dict, description="Count of coverage items per policy")
+
+
+class ExclusionComparison(BaseModel):
+    """Structured comparison of exclusion items across policies."""
+    common_items: List[str] = Field(default_factory=list, description="Exclusion items common to all policies")
+    unique_by_policy: Dict[str, List[str]] = Field(default_factory=dict, description="Exclusion items unique to each policy")
+    exclusion_counts: Dict[str, int] = Field(default_factory=dict, description="Count of exclusion items per policy")
+
+
+class PremiumComparison(BaseModel):
+    """Structured comparison of premiums across policies."""
+    amounts_by_policy: Dict[str, float] = Field(default_factory=dict, description="Premium amount for each policy")
+    currencies: List[str] = Field(default_factory=list, description="Currency codes present")
+    same_currency: bool = Field(default=False, description="Whether all premiums use same currency")
+    currency_mismatch_warning: Optional[str] = Field(default=None, description="Warning if currencies differ")
+    relative_difference: Optional[float] = Field(default=None, description="Relative difference between policies (for 2 policies)")
+
+
+class DeductibleComparison(BaseModel):
+    """Structured comparison of deductibles across policies."""
+    has_deductible: List[str] = Field(default_factory=list, description="Policies that have a deductible")
+    missing_deductible: List[str] = Field(default_factory=list, description="Policies without deductible information")
+    amounts_by_policy: Dict[str, float] = Field(default_factory=dict, description="Deductible amount for each policy")
+
+
+class EligibilityComparison(BaseModel):
+    """Structured comparison of eligibility criteria across policies."""
+    has_eligibility: List[str] = Field(default_factory=list, description="Policies with eligibility criteria")
+    missing_eligibility: List[str] = Field(default_factory=list, description="Policies without eligibility information")
+    requirements_by_policy: Dict[str, List[str]] = Field(default_factory=dict, description="Eligibility requirements per policy")
+    common_requirements: List[str] = Field(default_factory=list, description="Requirements common to all policies")
+    unique_requirements_by_policy: Dict[str, List[str]] = Field(default_factory=dict, description="Requirements unique to each policy")
+
+
+# Legacy comparison models (kept for backward compatibility)
 
 
 class ComparePoliciesRequest(BaseModel):
@@ -124,6 +166,7 @@ class ComparisonResult(BaseModel):
     deductible_comparison: Dict[str, Any]
     eligibility_comparison: Dict[str, Any]
     missing_fields: Dict[str, List[str]]
+    summary: str = Field(default="", description="Human-readable summary of the comparison")
     error: Optional[str] = None
 
 
