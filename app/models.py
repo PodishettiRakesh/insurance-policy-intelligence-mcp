@@ -33,6 +33,31 @@ class Eligibility(BaseModel):
     requirements: Optional[List[str]] = Field(default=None, description="Additional requirements")
 
 
+# Source reference models for evidence tracking
+
+
+class SourceReference(BaseModel):
+    """Reference to a specific field in a policy data source."""
+    policy_id: str = Field(..., description="Policy ID")
+    field: str = Field(..., description="Field name (e.g., 'premium', 'coverage', 'exclusions')")
+    value: Any = Field(default=None, description="The actual value from the source")
+    display_value: Optional[str] = Field(default=None, description="Human-readable display value")
+
+
+class Evidence(BaseModel):
+    """Evidence supporting a factual claim."""
+    claim: str = Field(..., description="The factual claim being made")
+    sources: List[SourceReference] = Field(..., description="List of source references supporting the claim")
+    is_supported: bool = Field(..., description="Whether the claim is supported by the sources")
+    confidence: float = Field(default=1.0, ge=0.0, le=1.0, description="Confidence in the evidence (0.0 to 1.0)")
+
+
+class EvidenceMetadata(BaseModel):
+    """Metadata for evidence tracking in tool results."""
+    has_evidence: bool = Field(default=False, description="Whether evidence tracking is enabled")
+    sources: List[SourceReference] = Field(default_factory=list, description="All source references for this result")
+
+
 class Policy(BaseModel):
     """Insurance policy model with validation."""
 
@@ -167,6 +192,7 @@ class ComparisonResult(BaseModel):
     eligibility_comparison: Dict[str, Any]
     missing_fields: Dict[str, List[str]]
     summary: str = Field(default="", description="Human-readable summary of the comparison")
+    evidence_metadata: EvidenceMetadata = Field(default_factory=EvidenceMetadata, description="Source references for the comparison")
     error: Optional[str] = None
 
 
@@ -202,6 +228,7 @@ class EligibilityCheckResult(BaseModel):
     overall_status: str = Field(..., description="Overall status: 'eligible', 'ineligible', or 'undetermined'")
     criteria_results: List[EligibilityCriterionResult] = Field(..., description="Results for each eligibility criterion")
     summary: str = Field(..., description="Human-readable summary of the eligibility check")
+    evidence_metadata: EvidenceMetadata = Field(default_factory=EvidenceMetadata, description="Source references for the eligibility check")
     error: Optional[str] = None
 
 

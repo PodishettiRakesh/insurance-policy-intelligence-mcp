@@ -15,6 +15,7 @@ from app.models import (
     DeductibleComparison,
     EligibilityComparison,
 )
+from app.evidence_tracker import EvidenceTracker
 
 
 class ComparisonError(Exception):
@@ -101,6 +102,15 @@ def compare_policies(policy_ids: List[str]) -> ComparisonResult:
         deductible_comparison
     )
 
+    # Add evidence metadata
+    evidence_tracker = EvidenceTracker()
+    all_sources = []
+    for policy in policies:
+        sources = evidence_tracker.extract_policy_sources(policy)
+        all_sources.extend(sources)
+
+    evidence_metadata = evidence_tracker.create_evidence_metadata(all_sources)
+
     return ComparisonResult(
         success=True,
         policies=comparison_items,
@@ -110,7 +120,8 @@ def compare_policies(policy_ids: List[str]) -> ComparisonResult:
         deductible_comparison=deductible_comparison.model_dump(),
         eligibility_comparison=eligibility_comparison.model_dump(),
         missing_fields=missing_fields,
-        summary=summary
+        summary=summary,
+        evidence_metadata=evidence_metadata
     )
 
 

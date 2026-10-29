@@ -10,6 +10,7 @@ from app.models import (
 )
 from app.rule_parser import parse_criteria_to_rules
 from app.rule_engine import RuleEngine
+from app.evidence_tracker import EvidenceTracker
 
 
 class EligibilityError(Exception):
@@ -91,13 +92,29 @@ def check_eligibility(policy_id: str, applicant_info: Dict[str, Any]) -> Eligibi
         len(criteria_results)
     )
 
+    # Add evidence metadata
+    evidence_tracker = EvidenceTracker()
+    sources = []
+
+    # Add source reference for policy eligibility criteria
+    if policy.eligibility and policy.eligibility.requirements:
+        sources.append(evidence_tracker.create_source_reference(
+            policy_id=policy.policy_id,
+            field="eligibility.requirements",
+            value=policy.eligibility.requirements,
+            display_value=f"{len(policy.eligibility.requirements)} eligibility criteria"
+        ))
+
+    evidence_metadata = evidence_tracker.create_evidence_metadata(sources)
+
     return EligibilityCheckResult(
         success=True,
         policy_id=policy.policy_id,
         policy_title=policy.title,
         overall_status=overall_status,
         criteria_results=criteria_results,
-        summary=summary
+        summary=summary,
+        evidence_metadata=evidence_metadata
     )
 
 

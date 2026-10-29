@@ -11,6 +11,7 @@ from langchain_core.messages import HumanMessage, SystemMessage
 
 from app.llm_config import get_llm
 from app.mcp_client import MCPClient
+from app.evidence_tracker import EvidenceTracker
 
 
 # Define the agent state
@@ -572,6 +573,7 @@ Only call tools if you have sufficient information. If multiple tools are needed
         # Prepare context from tool results for LLM
         context_parts = []
         policy_ids_cited = []
+        evidence_tracker = EvidenceTracker()
 
         for tool_result in tool_results:
             tool_name = tool_result["tool"]
@@ -597,6 +599,12 @@ Only call tools if you have sufficient information. If multiple tools are needed
                     policy_ids = [p["policy_id"] for p in policies]
                     policy_ids_cited.extend(policy_ids)
 
+                    # Extract evidence metadata if available
+                    if result.get("evidence_metadata") and result["evidence_metadata"].get("has_evidence"):
+                        sources = result["evidence_metadata"].get("sources", [])
+                        for source in sources:
+                            context_parts.append(f"Source: {evidence_tracker.format_citation(source)} = {source.get('display_value', source.get('value'))}")
+
                     context_parts.append(f"Compared {len(policies)} policies:")
                     for policy in policies:
                         context_parts.append(f"- {policy['policy_id']}: {policy['title']}")
@@ -607,6 +615,13 @@ Only call tools if you have sufficient information. If multiple tools are needed
             elif tool_name == "check_eligibility":
                 if result.get("success"):
                     policy_ids_cited.append(result["policy_id"])
+
+                    # Extract evidence metadata if available
+                    if result.get("evidence_metadata") and result["evidence_metadata"].get("has_evidence"):
+                        sources = result["evidence_metadata"].get("sources", [])
+                        for source in sources:
+                            context_parts.append(f"Source: {evidence_tracker.format_citation(source)} = {source.get('display_value', source.get('value'))}")
+
                     context_parts.append(f"Eligibility check for {result['policy_id']} ({result['policy_title']}):")
                     context_parts.append(f"Status: {result['overall_status'].upper()}")
                     context_parts.append(f"Summary: {result['summary']}")
@@ -637,9 +652,10 @@ Requirements:
 2. Do NOT make up or hallucinate any information
 3. If information is not available in the tool results, say so explicitly
 4. Cite policy IDs using this format: [TCI-DOM-001] when referring to specific policies
-5. Keep the answer concise and natural
-6. Do NOT include full policy details in the answer - only cite policy IDs
-7. Focus on directly answering the user's question
+5. For specific field values, use field-level citations like: [TCI-DOM-001:premium] = 25000 INR
+6. Keep the answer concise and natural
+7. Do NOT include full policy details in the answer - only cite policy IDs and specific field values
+8. Focus on directly answering the user's question
 
 Policy IDs referenced: {', '.join(unique_policy_ids) if unique_policy_ids else 'None'}
 
