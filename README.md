@@ -1,13 +1,14 @@
 # Insurance Policy Intelligence - MCP
 
-Backend-only MCP and Agentic AI project for searching, comparing, and analyzing insurance policies using Python, MCP, and LangGraph.
+Backend-only MCP and Agentic AI project for searching, comparing, and analyzing insurance policies using Python, MCP, LangGraph, and LLMs.
 
 ## Overview
 
-This project implements a Model Context Protocol (MCP) server that allows clients to search and compare insurance policies. The server exposes tools for searching policies with filters and comparing multiple policies side-by-side.
+This project implements a Model Context Protocol (MCP) server with an intelligent LangGraph-based agent that can answer natural language questions about insurance policies. The agent intelligently selects and invokes search, comparison, and eligibility tools, generates grounded answers based on actual tool outputs, and handles missing information by asking clarifying questions.
 
 ## Features
 
+### Core Features
 - **Pydantic Models**: Structured data validation for insurance policies
 - **Policy Catalogue**: 15 sample trade credit insurance policies
 - **Search Functionality**: Case-insensitive keyword matching across title, description, coverage, and tags
@@ -18,11 +19,23 @@ This project implements a Model Context Protocol (MCP) server that allows client
 - **MCP Client**: Tool discovery and invocation support
 - **Comprehensive Tests**: 105 tests covering models, catalogue, search, comparison, eligibility, server, client, and e2e flows
 
+### LangGraph Agent Features
+- **LLM-Powered Intent Analysis**: Uses OpenRouter (OpenAI-compatible) LLM to understand natural language queries
+- **Intelligent Tool Selection**: Automatically determines which tools to call (search, compare, eligibility)
+- **Multi-Step Workflows**: Supports complex workflows like "search then compare"
+- **Grounded Answer Generation**: Generates responses strictly based on tool results with policy ID citations
+- **Error Handling**: Graceful error handling with natural error messages
+- **Missing Information Detection**: Asks clarifying questions when required information is missing
+- **Fallback Mechanisms**: Rule-based fallback when LLM is unavailable
+
 ## Technology Stack
 
 - **Python**: 3.11+
 - **Data Validation**: Pydantic v2.14.1
 - **MCP SDK**: Official Python MCP SDK v2.3.0
+- **LangGraph**: v0.2.0+ for agent workflow orchestration
+- **LangChain**: v0.3.0+ for LLM integration
+- **LLM Provider**: OpenRouter (OpenAI-compatible API)
 - **Testing**: pytest v9.2.0
 - **Transport**: stdio (for local development)
 
@@ -37,7 +50,10 @@ insurance-policy-intelligence-mcp/
 │   ├── search.py          # Search implementation
 │   ├── comparison.py      # Policy comparison service
 │   ├── eligibility.py     # Eligibility evaluation service
-│   └── server.py          # MCP server
+│   ├── server.py          # MCP server
+│   ├── llm_config.py      # LLM provider configuration (OpenRouter)
+│   ├── mcp_client.py      # MCP client integration layer
+│   └── agent.py           # LangGraph agent workflow
 ├── data/
 │   └── policies.json      # Sample policy data
 ├── tests/
@@ -52,6 +68,9 @@ insurance-policy-intelligence-mcp/
 │   └── test_e2e.py        # End-to-end integration tests
 ├── venv/                  # Virtual environment
 ├── requirements.txt       # Python dependencies
+├── .env.example           # Environment variable template
+├── test_mcp_client.py     # MCP client integration test
+├── test_agent.py          # LangGraph agent test
 ├── README.md             # This file
 └── .gitignore
 ```
@@ -96,6 +115,15 @@ source venv/bin/activate
 4. Install dependencies:
 ```bash
 pip install -r requirements.txt
+```
+
+5. Configure environment variables:
+```bash
+# Copy the example environment file
+cp .env.example .env
+
+# Edit .env and add your OpenRouter API key
+# OPENROUTER_API_KEY=your_api_key_here
 ```
 
 ## Running the MCP Server
@@ -156,6 +184,90 @@ pytest -v
 ```
 
 ## Usage Example
+
+### Using the LangGraph Agent
+
+The LangGraph agent provides a natural language interface for querying insurance policies. Here's how to use it:
+
+```python
+from app.agent import InsurancePolicyAgent
+
+# Initialize the agent
+agent = InsurancePolicyAgent()
+
+# Search for policies
+result = agent.run("Find domestic trade credit insurance policies")
+print(result["answer"])
+
+# Compare policies
+result = agent.run("Compare policies TCI-DOM-001 and TCI-DOM-002")
+print(result["answer"])
+
+# Check eligibility
+result = agent.run(
+    "Check eligibility for TCI-DOM-001. "
+    "I have annual turnover of 15 million, business is 3 years old, and I have financial statements."
+)
+print(result["answer"])
+
+# Multi-step workflow (search then compare)
+result = agent.run("Find domestic policies and compare them")
+print(result["answer"])
+```
+
+#### Example Agent Responses
+
+**Search Query:**
+```
+User: Find domestic trade credit insurance policies
+
+Agent: Here are the available domestic trade credit insurance policies:
+
+1. [TCI-DOM-001]: Domestic Trade Credit Insurance - Standard, Premium: 25,000 INR
+2. [TCI-DOM-002]: Domestic Trade Credit Insurance - Premium, Premium: 45,000 INR
+3. [TCI-DOM-003]: Domestic Trade Credit Insurance - SME, Premium: 12,000 INR
+
+If you need more information about any specific policy, feel free to ask!
+```
+
+**Compare Query:**
+```
+User: Compare policies TCI-DOM-001 and TCI-DOM-002
+
+Agent: Based on the comparison of [TCI-DOM-001] and [TCI-DOM-002]:
+
+[TCI-DOM-001] (Standard) has a premium of 25,000 INR with a 5,000 INR deductible.
+[TCI-DOM-002] (Premium) has a higher premium of 45,000 INR but a lower deductible of 3,000 INR.
+
+The Premium policy offers higher coverage (95% vs 90%) and additional risk management services.
+```
+
+**Eligibility Query:**
+```
+User: Check eligibility for TCI-DOM-001 with 15 million turnover and 3 years in business
+
+Agent: Based on the eligibility check for [TCI-DOM-001]:
+
+Status: ELIGIBLE
+
+All 3 criteria have been met:
+- Minimum annual turnover requirement: PASSED (15,000,000 meets 10,000,000 minimum)
+- Business registration requirement: PASSED (3 years meets 2 year minimum)
+- Financial statements requirement: PASSED
+```
+
+**Missing Information:**
+```
+User: Check eligibility for a policy
+
+Agent: I need some additional information to help you:
+
+- Which policy would you like to check? Please provide the policy ID (e.g., TCI-DOM-001).
+- Please provide your information such as:
+  - Annual turnover (e.g., 15 million)
+  - Business age in years (e.g., 3 years)
+  - Whether you have financial statements
+```
 
 ### Using the MCP Client
 
@@ -419,8 +531,9 @@ Each criterion returns one of three statuses:
 
 ## Testing Coverage
 
-The project includes 105 tests across 7 test files:
+The project includes comprehensive tests across multiple test files:
 
+### Core MCP Tests (105 tests)
 - **test_models.py** (13 tests): Pydantic model validation
 - **test_catalogue.py** (8 tests): Policy loading and validation
 - **test_search.py** (22 tests): Search logic and filters
@@ -429,6 +542,26 @@ The project includes 105 tests across 7 test files:
 - **test_mcp_server.py** (3 tests): MCP server configuration
 - **test_client.py** (7 tests): MCP client interaction
 - **test_e2e.py** (3 tests): End-to-end integration flows
+
+### Agent Integration Tests
+- **test_mcp_client.py**: Tests MCP client integration with the server
+- **test_agent.py**: Tests LangGraph agent workflow including:
+  - Search queries with LLM intent analysis
+  - Policy comparison
+  - Eligibility checking
+  - Missing information handling
+  - Multi-step workflows (search → compare)
+  - Error handling
+
+### Running Agent Tests
+
+```bash
+# Test MCP client integration
+python test_mcp_client.py
+
+# Test LangGraph agent
+python test_agent.py
+```
 
 All core tests (models, catalogue, search, comparison, eligibility) pass successfully.
 
@@ -457,14 +590,16 @@ To use the MCP Inspector for interactive testing, ensure Node.js and `npx` are i
 
 ## Future Enhancements
 
-While the current milestone focuses on the MCP server and client foundation, future stages may include:
+Potential future enhancements for the project:
 
-- LangGraph integration for natural-language policy questions
-- Retrieval-augmented generation (RAG)
-- Frontend or chat interface
-- Persistent database storage
-- Advanced retrieval, ranking, and metadata filtering
-- Authentication, authorization, and deployment
+- **Chat CLI Interface**: Interactive command-line interface for conversational agent interaction
+- **Retrieval-Augmented Generation (RAG)**: Vector-based retrieval for more advanced policy analysis
+- **Frontend Interface**: Web-based chat interface for the agent
+- **Persistent Database Storage**: Replace JSON file with proper database backend
+- **Advanced Retrieval**: More sophisticated ranking and metadata filtering
+- **Authentication & Authorization**: User management and access control
+- **Multi-Turn Conversations**: Enhanced conversation history and context retention
+- **Policy Recommendations**: Intelligent policy recommendation engine
 
 ## License
 
