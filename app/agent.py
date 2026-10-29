@@ -451,7 +451,7 @@ Only call tools if you have sufficient information. If multiple tools are needed
 
     def _call_tools(self, state: AgentState) -> AgentState:
         """
-        Execute the selected MCP tools.
+        Execute the selected MCP tools with enhanced error handling.
 
         Args:
             state: Current agent state with tool_calls populated
@@ -472,44 +472,59 @@ Only call tools if you have sufficient information. If multiple tools are needed
 
                     print(f"[Agent] Calling tool: {tool_name}")
 
-                    if tool_name == "search_policies":
-                        result = client.search_policies(**arguments)
+                    try:
+                        if tool_name == "search_policies":
+                            result = client.search_policies(**arguments)
+                            new_tool_results.append({
+                                "tool": tool_name,
+                                "arguments": arguments,
+                                "result": result,
+                                "success": result.get("success", False)
+                            })
+
+                        elif tool_name == "compare_policies":
+                            result = client.compare_policies(**arguments)
+                            new_tool_results.append({
+                                "tool": tool_name,
+                                "arguments": arguments,
+                                "result": result,
+                                "success": result.get("success", False)
+                            })
+
+                        elif tool_name == "check_eligibility":
+                            result = client.check_eligibility(**arguments)
+                            new_tool_results.append({
+                                "tool": tool_name,
+                                "arguments": arguments,
+                                "result": result,
+                                "success": result.get("success", False)
+                            })
+
+                        elif tool_name == "none":
+                            # No tools to call
+                            new_tool_results.append({
+                                "tool": "none",
+                                "arguments": {},
+                                "result": {"message": "No tools were called"},
+                                "success": True
+                            })
+
+                    except Exception as tool_error:
+                        print(f"[Agent] Tool {tool_name} failed: {tool_error}")
                         new_tool_results.append({
                             "tool": tool_name,
                             "arguments": arguments,
-                            "result": result
-                        })
-
-                    elif tool_name == "compare_policies":
-                        result = client.compare_policies(**arguments)
-                        new_tool_results.append({
-                            "tool": tool_name,
-                            "arguments": arguments,
-                            "result": result
-                        })
-
-                    elif tool_name == "check_eligibility":
-                        result = client.check_eligibility(**arguments)
-                        new_tool_results.append({
-                            "tool": tool_name,
-                            "arguments": arguments,
-                            "result": result
-                        })
-
-                    elif tool_name == "none":
-                        # No tools to call
-                        new_tool_results.append({
-                            "tool": "none",
-                            "arguments": {},
-                            "result": {"message": "No tools were called"}
+                            "result": {"error": str(tool_error)},
+                            "success": False
                         })
 
         except Exception as e:
-            print(f"[Agent] Error calling tools: {e}")
+            print(f"[Agent] MCP client connection error: {e}")
             new_tool_results.append({
                 "tool": "error",
                 "arguments": {},
-                "result": {"error": str(e)}
+                "result": {"error": f"Failed to connect to MCP server: {str(e)}"},
+                "success": False
             })
 
         print(f"[Agent] Completed {len(new_tool_results)} tool execution(s)")
@@ -533,31 +548,24 @@ Only call tools if you have sufficient information. If multiple tools are needed
 
         print(f"\n[Agent] Generating grounded answer from {len(tool_results)} result(s)...")
 
+        # Check if there are tool errors
+        has_errors = any(not tr.get("success", True) for tr in tool_results if tr["tool"] != "none")
+
         # Check if there's missing information
         if missing_info:
-            # Deduplicate missing info using a set
-            unique_missing = list(dict.fromkeys(missing_info))  # Preserves order, removes duplicates
-            clarifying_questions = []
+            final_answer = self._generate_clarifying_questions(missing_info, user_query)
+            state["final_answer"] = final_answer
+            return state
 
-            # Group by type to avoid duplicates
-            has_policy_id = any("policy_id" in info for info in unique_missing)
-            has_applicant = any("applicant" in info for info in unique_missing)
-
-            if has_policy_id and "compare" in " ".join(unique_missing).lower():
-                clarifying_questions.append("Which policies would you like to compare? Please provide the policy IDs (e.g., TCI-DOM-001, TCI-DOM-002).")
-            elif has_policy_id:
-                clarifying_questions.append("Which policy would you like to check? Please provide the policy ID.")
-
-            if has_applicant:
-                clarifying_questions.append("Please provide your information such as annual turnover, business age in years, and whether you have financial statements.")
-
-            final_answer = "I need some additional information to help you:\n\n" + "\n".join(f"- {q}" for q in clarifying_questions)
+        # Check if there were errors in tool execution
+        if has_errors:
+            final_answer = self._handle_tool_errors(tool_results, user_query)
             state["final_answer"] = final_answer
             return state
 
         # Generate answer based on tool results
         if not tool_results or tool_results[0]["tool"] == "none":
-            final_answer = "I'm not sure how to help with that query. You can ask me to:\n- Search for insurance policies (e.g., 'Find domestic trade credit insurance')\n- Compare policies (e.g., 'Compare TCI-DOM-001 and TCI-DOM-002')\n- Check eligibility (e.g., 'Check eligibility for TCI-DOM-001 with 15 million turnover and 3 years in business')"
+            final_answer = self._generate_fallback_response(user_query)
             state["final_answer"] = final_answer
             return state
 
@@ -653,6 +661,116 @@ Generate a helpful, grounded answer:"""
 
         state["final_answer"] = final_answer
         return state
+
+    def _generate_clarifying_questions(self, missing_info: List[str], user_query: str) -> str:
+        """
+        Generate clarifying questions for missing information.
+
+        Args:
+            missing_info: List of missing information items
+            user_query: Original user query for context
+
+        Returns:
+            Formatted clarifying questions
+        """
+        # Deduplicate missing info
+        unique_missing = list(dict.fromkeys(missing_info))
+        clarifying_questions = []
+
+        # Group by type to avoid duplicates
+        has_policy_id = any("policy_id" in info for info in unique_missing)
+        has_applicant = any("applicant" in info for info in unique_missing)
+        has_compare = any("compare" in info.lower() for info in unique_missing)
+
+        if has_policy_id and has_compare:
+            clarifying_questions.append("Which policies would you like to compare? Please provide the policy IDs (e.g., TCI-DOM-001, TCI-DOM-002).")
+        elif has_policy_id:
+            clarifying_questions.append("Which policy would you like to check? Please provide the policy ID (e.g., TCI-DOM-001).")
+
+        if has_applicant:
+            clarifying_questions.append("Please provide your information such as:")
+            clarifying_questions.append("  - Annual turnover (e.g., 15 million)")
+            clarifying_questions.append("  - Business age in years (e.g., 3 years)")
+            clarifying_questions.append("  - Whether you have financial statements")
+
+        # Use LLM to generate natural clarifying response
+        if self.llm:
+            clarifying_prompt = f"""The user asked: "{user_query}"
+
+I need the following information to help them:
+{chr(10).join(f"- {q}" for q in clarifying_questions)}
+
+Generate a polite, natural response asking for this information. Keep it concise and helpful."""
+
+            try:
+                response = self.llm.invoke([
+                    SystemMessage(content="You are a helpful assistant."),
+                    HumanMessage(content=clarifying_prompt)
+                ])
+                return response.content.strip()
+            except Exception:
+                pass  # Fall through to template
+
+        # Fallback to template
+        return "I need some additional information to help you:\n\n" + "\n".join(f"- {q}" for q in clarifying_questions)
+
+    def _handle_tool_errors(self, tool_results: List[Dict], user_query: str) -> str:
+        """
+        Handle errors from tool execution.
+
+        Args:
+            tool_results: List of tool results with errors
+            user_query: Original user query
+
+        Returns:
+            Error response message
+        """
+        errors = []
+        for tr in tool_results:
+            if not tr.get("success", True) and tr["tool"] != "none":
+                error_msg = tr.get("result", {}).get("error", "Unknown error")
+                errors.append(f"{tr['tool']}: {error_msg}")
+
+        if not errors:
+            errors = ["Unknown error occurred"]
+
+        # Use LLM to generate natural error response
+        if self.llm:
+            error_prompt = f"""The user asked: "{user_query}"
+
+I encountered these errors while trying to help:
+{chr(10).join(f"- {e}" for e in errors)}
+
+Generate a polite, helpful response explaining what went wrong and suggesting what the user can do. Keep it concise."""
+
+            try:
+                response = self.llm.invoke([
+                    SystemMessage(content="You are a helpful assistant."),
+                    HumanMessage(content=error_prompt)
+                ])
+                return response.content.strip()
+            except Exception:
+                pass  # Fall through to template
+
+        # Fallback to template
+        return f"I encountered an error while processing your request:\n\n" + "\n".join(f"- {e}" for e in errors) + "\n\nPlease try again or rephrase your question."
+
+    def _generate_fallback_response(self, user_query: str) -> str:
+        """
+        Generate a fallback response for unanswerable queries.
+
+        Args:
+            user_query: Original user query
+
+        Returns:
+            Fallback response message
+        """
+        fallback_msg = "I'm not sure how to help with that query. You can ask me to:\n"
+        fallback_msg += "- Search for insurance policies (e.g., 'Find domestic trade credit insurance')\n"
+        fallback_msg += "- Compare policies (e.g., 'Compare TCI-DOM-001 and TCI-DOM-002')\n"
+        fallback_msg += "- Check eligibility (e.g., 'Check eligibility for TCI-DOM-001 with 15 million turnover and 3 years in business')"
+
+        return fallback_msg
 
     def run(self, user_query: str) -> Dict[str, Any]:
         """
