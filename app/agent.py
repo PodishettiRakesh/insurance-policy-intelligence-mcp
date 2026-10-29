@@ -519,7 +519,7 @@ Only call tools if you have sufficient information. If multiple tools are needed
 
     def _generate_answer(self, state: AgentState) -> AgentState:
         """
-        Generate a response based on tool results.
+        Generate a grounded response based on tool results using LLM.
 
         Args:
             state: Current agent state with tool_results populated
@@ -529,8 +529,9 @@ Only call tools if you have sufficient information. If multiple tools are needed
         """
         tool_results = state["tool_results"]
         missing_info = state["missing_info"]
+        user_query = state["user_query"]
 
-        print(f"\n[Agent] Generating answer from {len(tool_results)} result(s)...")
+        print(f"\n[Agent] Generating grounded answer from {len(tool_results)} result(s)...")
 
         # Check if there's missing information
         if missing_info:
@@ -560,8 +561,9 @@ Only call tools if you have sufficient information. If multiple tools are needed
             state["final_answer"] = final_answer
             return state
 
-        # Build answer from tool results
-        answer_parts = []
+        # Prepare context from tool results for LLM
+        context_parts = []
+        policy_ids_cited = []
 
         for tool_result in tool_results:
             tool_name = tool_result["tool"]
@@ -569,50 +571,87 @@ Only call tools if you have sufficient information. If multiple tools are needed
 
             if tool_name == "search_policies":
                 if result.get("success") and result.get("count", 0) > 0:
-                    answer_parts.append(f"Found {result['count']} policies:")
-                    for policy in result["results"][:5]:  # Limit to 5 for readability
-                        answer_parts.append(f"\n- {policy['title']} ({policy['policy_id']})")
-                        answer_parts.append(f"  Category: {policy['category']}")
-                        answer_parts.append(f"  Provider: {policy['provider']}")
-                        answer_parts.append(f"  Premium: {policy['premium']['amount']} {policy['premium']['currency']}")
-                        answer_parts.append(f"  Coverage: {', '.join(policy['coverage'][:2])}...")
+                    policies = result["results"]
+                    policy_ids = [p["policy_id"] for p in policies]
+                    policy_ids_cited.extend(policy_ids)
+
+                    # Create concise summary for context
+                    context_parts.append(f"Search found {result['count']} policies:")
+                    for policy in policies[:5]:
+                        context_parts.append(f"- {policy['policy_id']}: {policy['title']}")
+                        context_parts.append(f"  Category: {policy['category']}, Premium: {policy['premium']['amount']} {policy['premium']['currency']}")
                 else:
-                    answer_parts.append("No policies found matching your search. Try using different keywords or check the spelling.")
+                    context_parts.append("Search found no matching policies.")
 
             elif tool_name == "compare_policies":
                 if result.get("success"):
-                    answer_parts.append(f"Comparison of {len(result.get('policies', []))} policies:")
-                    for policy in result["policies"]:
-                        answer_parts.append(f"\n- {policy['title']} ({policy['policy_id']})")
-                        answer_parts.append(f"  Premium: {policy['premium']['amount']} {policy['premium']['currency']} ({policy['premium']['period']})")
-                        answer_parts.append(f"  Deductible: {policy.get('deductible', {}).get('amount', 'N/A')} {policy.get('deductible', {}).get('currency', '')}")
-                        answer_parts.append(f"  Coverage: {', '.join(policy['coverage'][:2])}...")
+                    policies = result["policies"]
+                    policy_ids = [p["policy_id"] for p in policies]
+                    policy_ids_cited.extend(policy_ids)
+
+                    context_parts.append(f"Compared {len(policies)} policies:")
+                    for policy in policies:
+                        context_parts.append(f"- {policy['policy_id']}: {policy['title']}")
+                        context_parts.append(f"  Premium: {policy['premium']['amount']} {policy['premium']['currency']}, Deductible: {policy.get('deductible', {}).get('amount', 'N/A')} {policy.get('deductible', {}).get('currency', '')}")
                 else:
-                    answer_parts.append(f"Comparison failed: {result.get('error', 'Unknown error')}")
+                    context_parts.append(f"Comparison failed: {result.get('error', 'Unknown error')}")
 
             elif tool_name == "check_eligibility":
                 if result.get("success"):
-                    answer_parts.append(f"Eligibility check for {result['policy_title']}:")
-                    answer_parts.append(f"\nStatus: {result['overall_status'].upper()}")
-                    answer_parts.append(f"\n{result['summary']}")
+                    policy_ids_cited.append(result["policy_id"])
+                    context_parts.append(f"Eligibility check for {result['policy_id']} ({result['policy_title']}):")
+                    context_parts.append(f"Status: {result['overall_status'].upper()}")
+                    context_parts.append(f"Summary: {result['summary']}")
 
-                    # Add individual criterion results if available
                     if result.get("criteria_results"):
-                        answer_parts.append("\nDetailed breakdown:")
+                        context_parts.append("Criteria breakdown:")
                         for criterion in result["criteria_results"]:
-                            answer_parts.append(f"  - {criterion['criterion']}: {criterion['status'].upper()}")
-                            if criterion.get("reason"):
-                                answer_parts.append(f"    {criterion['reason']}")
+                            context_parts.append(f"- {criterion['criterion']}: {criterion['status'].upper()}")
                 else:
-                    answer_parts.append(f"Eligibility check failed: {result.get('error', 'Unknown error')}")
+                    context_parts.append(f"Eligibility check failed: {result.get('error', 'Unknown error')}")
 
             elif tool_name == "error":
-                answer_parts.append(f"An error occurred: {result.get('error', 'Unknown error')}")
+                context_parts.append(f"Error: {result.get('error', 'Unknown error')}")
 
-        final_answer = "\n".join(answer_parts)
+        # Use LLM to generate grounded answer
+        context = "\n".join(context_parts)
+        unique_policy_ids = list(set(policy_ids_cited))
+
+        grounded_prompt = f"""You are an insurance policy assistant. Answer the user's question based ONLY on the provided tool results.
+
+User Question: {user_query}
+
+Tool Results:
+{context}
+
+Requirements:
+1. Answer the question using ONLY the information from the tool results above
+2. Do NOT make up or hallucinate any information
+3. If information is not available in the tool results, say so explicitly
+4. Cite policy IDs using this format: [TCI-DOM-001] when referring to specific policies
+5. Keep the answer concise and natural
+6. Do NOT include full policy details in the answer - only cite policy IDs
+7. Focus on directly answering the user's question
+
+Policy IDs referenced: {', '.join(unique_policy_ids) if unique_policy_ids else 'None'}
+
+Generate a helpful, grounded answer:"""
+
+        try:
+            response = self.llm.invoke([
+                SystemMessage(content="You are a helpful insurance policy assistant that provides grounded answers based only on provided tool results."),
+                HumanMessage(content=grounded_prompt)
+            ])
+
+            final_answer = response.content.strip()
+            print(f"[Agent] LLM generated grounded answer")
+
+        except Exception as e:
+            print(f"[Agent] LLM answer generation failed: {e}, using template-based answer")
+            # Fallback to template-based answer
+            final_answer = context
+
         state["final_answer"] = final_answer
-
-        print(f"[Agent] Generated answer")
         return state
 
     def run(self, user_query: str) -> Dict[str, Any]:
