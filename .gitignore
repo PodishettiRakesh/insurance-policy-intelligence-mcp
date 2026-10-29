@@ -1,5 +1,6 @@
 prd.txt
 .env
+test_mcp_client.py
 
 # Python
 __pycache__/
