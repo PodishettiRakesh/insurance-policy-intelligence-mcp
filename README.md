@@ -13,9 +13,10 @@ This project implements a Model Context Protocol (MCP) server that allows client
 - **Search Functionality**: Case-insensitive keyword matching across title, description, coverage, and tags
 - **Filters**: Optional category and status filtering
 - **Policy Comparison**: Compare 2-5 policies side-by-side across coverage, exclusions, premiums, deductibles, and eligibility
+- **Eligibility Checking**: Evaluate whether applicants meet policy eligibility criteria with detailed criterion-by-criterion analysis
 - **MCP Server**: Official Python MCP SDK with stdio transport
 - **MCP Client**: Tool discovery and invocation support
-- **Comprehensive Tests**: 75 tests covering models, catalogue, search, comparison, server, client, and e2e flows
+- **Comprehensive Tests**: 105 tests covering models, catalogue, search, comparison, eligibility, server, client, and e2e flows
 
 ## Technology Stack
 
@@ -35,6 +36,7 @@ insurance-policy-intelligence-mcp/
 │   ├── catalogue.py       # Policy catalogue loader
 │   ├── search.py          # Search implementation
 │   ├── comparison.py      # Policy comparison service
+│   ├── eligibility.py     # Eligibility evaluation service
 │   └── server.py          # MCP server
 ├── data/
 │   └── policies.json      # Sample policy data
@@ -44,6 +46,7 @@ insurance-policy-intelligence-mcp/
 │   ├── test_catalogue.py  # Catalogue loading tests
 │   ├── test_search.py     # Search logic tests
 │   ├── test_comparison.py # Comparison logic tests
+│   ├── test_eligibility.py # Eligibility evaluation tests
 │   ├── test_mcp_server.py # MCP server tests
 │   ├── test_client.py     # MCP client tests
 │   └── test_e2e.py        # End-to-end integration tests
@@ -133,6 +136,9 @@ pytest tests/test_search.py
 # Comparison tests
 pytest tests/test_comparison.py
 
+# Eligibility tests
+pytest tests/test_eligibility.py
+
 # MCP server tests
 pytest tests/test_mcp_server.py
 
@@ -178,6 +184,29 @@ The tool returns a detailed comparison including:
 - Deductible comparison (amounts, currencies, missing deductibles)
 - Eligibility comparison (requirements, structured criteria)
 - Missing fields identification
+
+### Check Eligibility Tool Parameters
+
+The `check_eligibility_tool` accepts the following parameters:
+
+- **policy_id** (required): The policy ID to check eligibility for
+- **applicant_info** (required): Dictionary containing applicant information for evaluation
+
+The tool returns a detailed eligibility evaluation including:
+- Overall status: "eligible", "ineligible", or "undetermined"
+- Individual criterion results for each eligibility requirement
+- Human-readable summary of the evaluation
+
+Supported applicant information fields include:
+- `annual_turnover`, `turnover`, `revenue`: Annual business turnover
+- `business_age_years`, `registration_years`, `years_in_business`: Business duration
+- `financial_statements`, `audited_financial_statements`: Document availability
+- `export_license`, `export_years`: Export-specific information
+- `credit_rating`, `buyer_credit_rating`: Credit assessment
+- `customer_concentration`, `largest_buyer_percentage`: Customer diversity
+- `operating_regions`, `has_domestic_operations`, `has_export_operations`: Regional operations
+- `compliance_status`, `regulatory_compliance`: Regulatory compliance
+- And many more field variations for different requirement types
 
 ### Example Search Requests
 
@@ -251,6 +280,66 @@ The tool returns a detailed comparison including:
 }
 ```
 
+### Example Check Eligibility Requests
+
+**Check eligibility - eligible applicant:**
+```json
+{
+  "name": "check_eligibility_tool",
+  "arguments": {
+    "policy_id": "TCI-DOM-001",
+    "applicant_info": {
+      "annual_turnover": 15000000,
+      "business_age_years": 3,
+      "financial_statements": true
+    }
+  }
+}
+```
+
+**Check eligibility - ineligible applicant:**
+```json
+{
+  "name": "check_eligibility_tool",
+  "arguments": {
+    "policy_id": "TCI-DOM-002",
+    "applicant_info": {
+      "annual_turnover": 30000000,
+      "registration_years": 2,
+      "audited_financial_statements": true
+    }
+  }
+}
+```
+
+**Check eligibility - undetermined (missing information):**
+```json
+{
+  "name": "check_eligibility_tool",
+  "arguments": {
+    "policy_id": "TCI-EXP-002",
+    "applicant_info": {
+      "export_years": 4
+    }
+  }
+}
+```
+
+**Check eligibility - export policy with multiple criteria:**
+```json
+{
+  "name": "check_eligibility_tool",
+  "arguments": {
+    "policy_id": "TCI-EXP-002",
+    "applicant_info": {
+      "annual_turnover": 25000000,
+      "export_years": 4,
+      "regulatory_compliance": true
+    }
+  }
+}
+```
+
 ## Sample Data
 
 The project includes 15 sample trade credit insurance policies covering:
@@ -302,18 +391,46 @@ def search_policies(
 ) -> List[Policy]
 ```
 
+### Eligibility Check Function
+
+```python
+def check_eligibility(
+    policy_id: str,
+    applicant_info: Dict[str, Any]
+) -> EligibilityCheckResult
+```
+
+The eligibility checker evaluates criteria patterns including:
+- Minimum/maximum turnover requirements
+- Business registration duration
+- Export business experience
+- License and document requirements
+- Credit ratings
+- Customer diversity (concentration limits)
+- Multi-region operations
+- Government contract requirements
+- Compliance status
+- And more specialized criteria
+
+Each criterion returns one of three statuses:
+- **passed**: Applicant meets the requirement
+- **failed**: Applicant does not meet the requirement
+- **undetermined**: Insufficient information to evaluate (never assumes eligibility)
+
 ## Testing Coverage
 
-The project includes 56 tests across 6 test files:
+The project includes 105 tests across 7 test files:
 
 - **test_models.py** (13 tests): Pydantic model validation
 - **test_catalogue.py** (8 tests): Policy loading and validation
 - **test_search.py** (22 tests): Search logic and filters
+- **test_comparison.py** (16 tests): Policy comparison logic
+- **test_eligibility.py** (30 tests): Eligibility evaluation logic
 - **test_mcp_server.py** (3 tests): MCP server configuration
 - **test_client.py** (7 tests): MCP client interaction
 - **test_e2e.py** (3 tests): End-to-end integration flows
 
-All tests pass successfully.
+All core tests (models, catalogue, search, comparison, eligibility) pass successfully.
 
 ## Troubleshooting
 

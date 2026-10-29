@@ -5,3 +5,7 @@ pydantic>=2.0.0
 pytest>=8.0.0
 # Stage 3.1: MCP Python SDK
 mcp[cli]>=1.0.0
+# Stage 3.1: LangGraph + LLM Agent
+langchain-openai>=0.1.0
+langgraph>=0.0.20
+python-dotenv>=1.0.0

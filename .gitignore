@@ -1,4 +1,5 @@
 prd.txt
+.env
 
 # Python
 __pycache__/
@@ -27,6 +28,7 @@ venv/
 env/
 ENV/
 .venv
+
 
 # IDE
 .vscode/
