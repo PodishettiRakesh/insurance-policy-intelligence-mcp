@@ -203,3 +203,100 @@ class EligibilityCheckResult(BaseModel):
     criteria_results: List[EligibilityCriterionResult] = Field(..., description="Results for each eligibility criterion")
     summary: str = Field(..., description="Human-readable summary of the eligibility check")
     error: Optional[str] = None
+
+
+# Explicit eligibility rule models
+
+
+class RuleType(str, Enum):
+    """Enumeration of supported eligibility rule types."""
+    MINIMUM_TURNOVER = "minimum_turnover"
+    MAXIMUM_TURNOVER = "maximum_turnover"
+    MINIMUM_YEARS = "minimum_years"
+    DOCUMENT_REQUIRED = "document_required"
+    LICENSE_REQUIRED = "license_required"
+    CREDIT_RATING = "credit_rating"
+    EXPOSURE_LIMIT = "exposure_limit"
+    CUSTOMER_DIVERSITY = "customer_diversity"
+    COMPLIANCE = "compliance"
+    MULTI_REGION = "multi_region"
+    EXISTING_POLICYHOLDER = "existing_policyholder"
+    UNKNOWN = "unknown"
+
+
+class EligibilityRule(BaseModel):
+    """Base model for an explicit eligibility rule."""
+    rule_type: RuleType = Field(..., description="Type of the rule")
+    original_text: str = Field(..., description="Original criterion text from policy")
+    description: str = Field(..., description="Human-readable description of the rule")
+    required_fields: List[str] = Field(..., description="Applicant fields required to evaluate this rule")
+
+
+class MinimumTurnoverRule(EligibilityRule):
+    """Rule for minimum annual turnover requirement."""
+    rule_type: RuleType = RuleType.MINIMUM_TURNOVER
+    threshold: float = Field(..., description="Minimum required turnover amount")
+    currency: str = Field(default="INR", description="Currency of the threshold")
+
+
+class MaximumTurnoverRule(EligibilityRule):
+    """Rule for maximum annual turnover requirement."""
+    rule_type: RuleType = RuleType.MAXIMUM_TURNOVER
+    threshold: float = Field(..., description="Maximum allowed turnover amount")
+    currency: str = Field(default="INR", description="Currency of the threshold")
+
+
+class MinimumYearsRule(EligibilityRule):
+    """Rule for minimum years requirement (registration, export, etc.)."""
+    rule_type: RuleType = RuleType.MINIMUM_YEARS
+    years: int = Field(..., description="Minimum required years")
+    years_type: str = Field(..., description="Type of years (e.g., 'business_age', 'export_years')")
+
+
+class DocumentRequiredRule(EligibilityRule):
+    """Rule for required document."""
+    rule_type: RuleType = RuleType.DOCUMENT_REQUIRED
+    document_type: str = Field(..., description="Type of document required")
+
+
+class LicenseRequiredRule(EligibilityRule):
+    """Rule for required license."""
+    rule_type: RuleType = RuleType.LICENSE_REQUIRED
+    license_type: str = Field(..., description="Type of license required")
+
+
+class CreditRatingRule(EligibilityRule):
+    """Rule for credit rating requirement."""
+    rule_type: RuleType = RuleType.CREDIT_RATING
+
+
+class ExposureLimitRule(EligibilityRule):
+    """Rule for exposure limit requirement."""
+    rule_type: RuleType = RuleType.EXPOSURE_LIMIT
+
+
+class CustomerDiversityRule(EligibilityRule):
+    """Rule for customer diversity requirement."""
+    rule_type: RuleType = RuleType.CUSTOMER_DIVERSITY
+    max_single_buyer_percentage: float = Field(default=30.0, description="Maximum percentage any single buyer can represent")
+
+
+class ComplianceRule(EligibilityRule):
+    """Rule for compliance requirement."""
+    rule_type: RuleType = RuleType.COMPLIANCE
+    compliance_type: Optional[str] = Field(default=None, description="Type of compliance required")
+
+
+class MultiRegionRule(EligibilityRule):
+    """Rule for multi-region/multi-country requirement."""
+    rule_type: RuleType = RuleType.MULTI_REGION
+
+
+class ExistingPolicyholderRule(EligibilityRule):
+    """Rule for existing policyholder requirement."""
+    rule_type: RuleType = RuleType.EXISTING_POLICYHOLDER
+
+
+class UnknownRule(EligibilityRule):
+    """Rule that could not be parsed (requires manual review)."""
+    rule_type: RuleType = RuleType.UNKNOWN
