@@ -4,6 +4,11 @@ from typing import List, Optional
 
 from app.catalogue import get_catalogue
 from app.models import Policy
+from app.search_enhancements import (
+    SynonymManager,
+    rank_policies_by_relevance,
+    normalize_text,
+)
 
 
 class SearchValidationError(Exception):
@@ -18,7 +23,7 @@ def search_policies(
     limit: int = 10
 ) -> List[Policy]:
     """
-    Search policies using case-insensitive keyword matching with optional filters.
+    Search policies using relevance scoring with synonym support and optional filters.
 
     Args:
         query: Text to search for (required, must not be empty)
@@ -27,7 +32,7 @@ def search_policies(
         limit: Maximum number of results to return (default 10, max 50)
 
     Returns:
-        List of matching Policy objects. Empty list if no matches found.
+        List of matching Policy objects ranked by relevance. Empty list if no matches found.
 
     Raises:
         SearchValidationError: If query is empty or limit is invalid.
@@ -45,11 +50,14 @@ def search_policies(
     # Get all policies
     policies = get_catalogue()
 
-    # Normalize query for case-insensitive matching
-    query_lower = query.strip().lower()
+    # Initialize synonym manager
+    synonym_manager = SynonymManager()
 
-    # Filter policies
-    results = []
+    # Normalize query
+    query_normalized = normalize_text(query.strip())
+
+    # Filter policies by category and status first
+    filtered_policies = []
     for policy in policies:
         # Apply category filter if provided
         if category and policy.category.lower() != category.lower():
@@ -59,19 +67,21 @@ def search_policies(
         if status and policy.status.value.lower() != status.lower():
             continue
 
-        # Check for keyword match in searchable fields
-        searchable_text = (
-            policy.title.lower() + " " +
-            policy.description.lower() + " " +
-            " ".join(policy.coverage).lower() + " " +
-            " ".join(policy.tags).lower()
-        )
+        filtered_policies.append(policy)
 
-        if query_lower in searchable_text:
-            results.append(policy)
+    # Rank policies by relevance
+    scored_policies = rank_policies_by_relevance(
+        filtered_policies,
+        query_normalized,
+        synonym_manager
+    )
 
-        # Stop if we've reached the limit
-        if len(results) >= limit:
-            break
+    # Filter out policies with zero score (no matches)
+    matching_policies = [
+        (policy, score) for policy, score in scored_policies if score > 0
+    ]
+
+    # Return top N policies (without scores)
+    results = [policy for policy, score in matching_policies[:limit]]
 
     return results
