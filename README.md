@@ -17,6 +17,7 @@ This project implements a Model Context Protocol (MCP) server with an intelligen
 - **Eligibility Checking**: Evaluate whether applicants meet policy eligibility criteria with detailed criterion-by-criterion analysis
 - **MCP Server**: Official Python MCP SDK with stdio transport
 - **MCP Client**: Tool discovery and invocation support
+- **Gradio Chat Interface**: Web-based UI for natural language interaction with the agent
 - **Comprehensive Tests**: 105 tests covering models, catalogue, search, comparison, eligibility, server, client, and e2e flows
 
 ### LangGraph Agent Features
@@ -37,6 +38,7 @@ This project implements a Model Context Protocol (MCP) server with an intelligen
 - **LangChain**: v0.3.0+ for LLM integration
 - **LLM Provider**: OpenRouter (OpenAI-compatible API)
 - **Testing**: pytest v9.2.0
+- **Web UI**: Gradio v4.0.0+ for chat interface
 - **Transport**: stdio (for local development)
 
 ## Project Structure
@@ -53,7 +55,8 @@ insurance-policy-intelligence-mcp/
 │   ├── server.py          # MCP server
 │   ├── llm_config.py      # LLM provider configuration (OpenRouter)
 │   ├── mcp_client.py      # MCP client integration layer
-│   └── agent.py           # LangGraph agent workflow
+│   ├── agent.py           # LangGraph agent workflow
+│   └── ui.py              # Gradio chat interface
 ├── data/
 │   └── policies.json      # Sample policy data
 ├── tests/
@@ -143,6 +146,53 @@ You can test the server manually by sending JSON-RPC requests:
 ```bash
 echo '{"jsonrpc":"2.0","id":1,"method":"ping"}' | python -m app.server
 ```
+
+## Gradio Chat Interface
+
+A web-based chat interface is available for interacting with the Insurance Policy Intelligence agent.
+
+### Installation
+
+Ensure Gradio is installed:
+
+```bash
+pip install -r requirements.txt
+```
+
+### Start the UI
+
+```bash
+python -m app.ui
+```
+
+The interface will be available at http://127.0.0.1:7860 by default.
+
+### Configuration
+
+You can configure the UI server using environment variables:
+
+- `GRADIO_SERVER_NAME`: Server host (default: `127.0.0.1`)
+- `GRADIO_SERVER_PORT`: Server port (default: `7860`)
+- `GRADIO_SHARE`: Set to `true` to create a public shareable link (default: `false`)
+
+Example:
+
+```bash
+# Set server to listen on all interfaces
+GRADIO_SERVER_NAME=0.0.0.0 python -m app.ui
+
+# Use a different port
+GRADIO_SERVER_PORT=8080 python -m app.ui
+```
+
+### Example Questions
+
+The UI includes example questions you can try:
+
+- **Policy Search**: "Find domestic trade credit insurance policies"
+- **Policy Comparison**: "Compare policies TCI-DOM-001 and TCI-DOM-002"
+- **Eligibility Check**: "Check eligibility for TCI-DOM-001. I have annual turnover of 15 million, business is 3 years old, and I have financial statements."
+- **Unsupported Query**: "What's the weather today?"
 
 ## Running Tests
 
@@ -594,7 +644,7 @@ Potential future enhancements for the project:
 
 - **Chat CLI Interface**: Interactive command-line interface for conversational agent interaction
 - **Retrieval-Augmented Generation (RAG)**: Vector-based retrieval for more advanced policy analysis
-- **Frontend Interface**: Web-based chat interface for the agent
+- **Remote MCP Transport**: Support for SSE or WebSocket transport for remote deployment
 - **Persistent Database Storage**: Replace JSON file with proper database backend
 - **Advanced Retrieval**: More sophisticated ranking and metadata filtering
 - **Authentication & Authorization**: User management and access control
